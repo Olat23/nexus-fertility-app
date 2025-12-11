@@ -8,9 +8,9 @@ class PhoneOTPVerificationScreen extends StatefulWidget {
   final String phoneNumber;
 
   const PhoneOTPVerificationScreen({
-    Key? key,
+    super.key,
     required this.phoneNumber,
-  }) : super(key: key);
+  });
 
   @override
   State<PhoneOTPVerificationScreen> createState() =>
@@ -109,7 +109,15 @@ class _PhoneOTPVerificationScreenState
                         maxLength: 1,
                         decoration: InputDecoration(
                           counterText: '',
+                          fillColor: Colors.white,
+                          filled: true,
                           border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: Colors.grey.shade300,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide(
                               color: Colors.grey.shade300,

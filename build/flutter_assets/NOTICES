@@ -1534,6 +1534,7 @@ flutter_plugin_android_lifecycle
 image_picker_for_web
 image_picker_macos
 image_picker_platform_interface
+shared_preferences
 shared_preferences_android
 shared_preferences_foundation
 
@@ -5021,7 +5022,6 @@ path_provider_linux
 path_provider_platform_interface
 path_provider_windows
 plugin_platform_interface
-shared_preferences
 shared_preferences_linux
 shared_preferences_platform_interface
 shared_preferences_web

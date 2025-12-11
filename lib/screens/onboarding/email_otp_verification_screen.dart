@@ -8,9 +8,9 @@ class EmailOTPVerificationScreen extends StatefulWidget {
   final String email;
 
   const EmailOTPVerificationScreen({
-    Key? key,
+    super.key,
     required this.email,
-  }) : super(key: key);
+  });
 
   @override
   State<EmailOTPVerificationScreen> createState() =>
@@ -109,7 +109,15 @@ class _EmailOTPVerificationScreenState
                         maxLength: 1,
                         decoration: InputDecoration(
                           counterText: '',
+                          fillColor: Colors.white,
+                          filled: true,
                           border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: Colors.grey.shade300,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide(
                               color: Colors.grey.shade300,

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../services/auth_service.dart';
 import 'phone_otp_verification_screen.dart';
 
 class PhoneSignupScreen extends StatefulWidget {
-  const PhoneSignupScreen({Key? key}) : super(key: key);
+  const PhoneSignupScreen({super.key});
 
   @override
   State<PhoneSignupScreen> createState() => _PhoneSignupScreenState();
@@ -15,7 +16,19 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
   final _formKey = GlobalKey<FormState>();
 
   bool _isLoading = false;
-  String _selectedCountryCode = '+1';
+  String _selectedCountryCode = '+234'; // Default to Nigeria
+
+  final Map<String, int> _countryCodeLengths = {
+    '+1': 10,     // USA
+    '+44': 10,    // UK
+    '+91': 10,    // India
+    '+234': 10,   // Nigeria
+    '+55': 11,    // Brazil
+    '+34': 9,     // Spain
+    '+33': 9,     // France
+    '+49': 11,    // Germany
+    '+39': 10,    // Italy
+  };
 
   final List<String> _countryCodes = [
     '+1',  // USA
@@ -122,8 +135,19 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
                         child: TextFormField(
                           controller: _phoneController,
                           decoration: InputDecoration(
-                            hintText: '(555) 000-0000',
+                            hintText: 'Phone number',
+                            fillColor: Colors.white,
+                            filled: true,
                             border: OutlineInputBorder(
+                              borderRadius: const BorderRadius.only(
+                                topRight: Radius.circular(12),
+                                bottomRight: Radius.circular(12),
+                              ),
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade300,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
                               borderRadius: const BorderRadius.only(
                                 topRight: Radius.circular(12),
                                 bottomRight: Radius.circular(12),
@@ -137,13 +161,18 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
                               vertical: 16,
                             ),
                           ),
-                          keyboardType: TextInputType.phone,
+                          keyboardType: TextInputType.number,
+                          maxLength: _countryCodeLengths[_selectedCountryCode] ?? 10,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Phone is required';
                             }
-                            if (value.length < 10) {
-                              return 'Invalid phone number';
+                            final expectedLength = _countryCodeLengths[_selectedCountryCode] ?? 10;
+                            if (value.length != expectedLength) {
+                              return 'Invalid phone number for this country';
                             }
                             return null;
                           },

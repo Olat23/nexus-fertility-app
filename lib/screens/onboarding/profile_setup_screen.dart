@@ -61,7 +61,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         ),
         centerTitle: true,
         title: const Text(
-          'Your Profile',
+          'Profile',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -121,27 +121,24 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   // Cycle Length
                   _buildFieldLabel('Cycle Length'),
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey.shade300),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            '$_cycleLength',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ),
-                        Text(
-                          'days',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                      ],
+                    child: DropdownButton<int>(
+                      value: _cycleLength,
+                      isExpanded: true,
+                      underline: const SizedBox(),
+                      items: List.generate(30, (i) => i + 1).map((days) {
+                        return DropdownMenuItem(
+                          value: days,
+                          child: Text('$days Days'),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() => _cycleLength = value ?? 28);
+                      },
                     ),
                   ),
                   const SizedBox(height: 8),
