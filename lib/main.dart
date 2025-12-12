@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart';
 import 'services/auth_service.dart';
@@ -51,7 +52,12 @@ class MyApp extends StatelessWidget {
             ),
             locale: localizationProvider.locale,
             supportedLocales: loc_provider.LocalizationProvider.supportedLocales,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
             home: const LanguageSelectionScreen(),
             routes: {
               '/home': (context) => const HomeScreen(),
