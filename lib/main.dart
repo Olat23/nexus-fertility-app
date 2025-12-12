@@ -51,10 +51,7 @@ class MyApp extends StatelessWidget {
             ),
             locale: localizationProvider.locale,
             supportedLocales: AppLocalizations.supportedLocales,
-            localizationsDelegates: [
-              AppLocalizations.delegate,
-              ...?AppLocalizations.localizationsDelegates,
-            ],
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
             home: const LanguageSelectionScreen(),
             routes: {
               '/home': (context) => const HomeScreen(),
