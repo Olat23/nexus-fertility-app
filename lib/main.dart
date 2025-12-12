@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
             locale: localizationProvider.locale,
-            supportedLocales: loc_provider.LocalizationProvider.supportedLocales,
+            supportedLocales: AppLocalizations.supportedLocales,
             localizationsDelegates: const [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
