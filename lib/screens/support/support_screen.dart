@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../services/encouragement_service.dart';
 import '../../services/tts_service.dart';
+import '../../services/localization_provider.dart';
 
 class SupportScreen extends StatefulWidget {
   const SupportScreen({super.key});
@@ -15,19 +16,20 @@ class _SupportScreenState extends State<SupportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = Provider.of<LocalizationProvider>(context);
     final encourager = EncouragementService();
     final tts = Provider.of<TtsService>(context);
     final message = encourager.dailyMessage(_mode);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Support Hub')),
+      appBar: AppBar(title: Text(loc.translate('supportHub'))),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Choose your support mode',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text(loc.translate('chooseSupportMode'),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             Row(
               children: [
@@ -54,9 +56,9 @@ class _SupportScreenState extends State<SupportScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Daily Affirmations',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text(loc.translate('dailyAffirmation'),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16)),
                         const SizedBox(height: 6),
                         Text(message, style: TextStyle(color: Colors.grey.shade700)),
                       ],
@@ -95,7 +97,7 @@ class _SupportScreenState extends State<SupportScreen> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {},
-              child: const Text('Explore Community Groups'),
+              child: Text(loc.translate('exploreCommunityGroups')),
             )
           ],
         ),

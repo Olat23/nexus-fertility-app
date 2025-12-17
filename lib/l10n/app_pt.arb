@@ -76,4 +76,21 @@
   "genderFemale": "Feminino",
   "genderOther": "Outro",
   "selectGender": "Selecionar Gênero"
+  ,
+  "profileTitle": "Perfil",
+  "editProfile": "Editar perfil",
+  "audioGuidance": "Orientação de Áudio",
+  "ttcHistory": "Histórico TTC",
+  "faithPreference": "Preferência de Fé",
+  "cycleLength": "Duração do Ciclo",
+  "lastPeriodDate": "Data da Última Menstruação",
+  "continue": "Continuar",
+  "joined": "Registrado",
+  "audioLessons": "Aprendizado em Áudio",
+  "play": "Reproduzir",
+  "stop": "Parar",
+  "supportHub": "Central de Suporte",
+  "dailyAffirmation": "Afirmações Diárias",
+  "chooseSupportMode": "Escolha seu modo de suporte",
+  "exploreCommunityGroups": "Explorar Grupos Comunitários"
 }

@@ -1,11 +1,11 @@
 {
-  "@@locale": "en",
+  "@@locale": "yo",
   "appTitle": "Nexus Fertility",
   "welcomeTitle": "Welcome to Nexus Fertility",
   "welcomeSubtitle": "Your personal fertility companion",
   "selectLanguage": "Select Language",
   "english": "English",
-  "yoruba": "Yoruba",
+  "yoruba": "Yorùbá",
   "igbo": "Igbo",
   "hausa": "Hausa",
   "pidgin": "Pidgin",
@@ -34,25 +34,11 @@
   "otpSentTo": "OTP sent to {email}",
   "@otpSentTo": {
     "description": "Message shown after OTP is sent",
-    "placeholders": {
-      "email": {
-        "type": "String"
-      }
-    }
+    "placeholders": {"email": {"type": "String"}}
   },
   "resendCode": "Resend Code",
   "codeExpires": "Code expires in {minutes}:{seconds}",
-  "@codeExpires": {
-    "description": "Timer for OTP expiration",
-    "placeholders": {
-      "minutes": {
-        "type": "String"
-      },
-      "seconds": {
-        "type": "String"
-      }
-    }
-  },
+  "@codeExpires": {"description": "Timer for OTP expiration","placeholders": {"minutes": {"type": "String"},"seconds": {"type": "String"}}},
   "invalidEmail": "Please enter a valid email address",
   "invalidPhone": "Please enter a valid phone number",
   "passwordMismatch": "Passwords do not match",
@@ -75,8 +61,7 @@
   "genderMale": "Male",
   "genderFemale": "Female",
   "genderOther": "Other",
-  "selectGender": "Select Gender"
-  ,
+  "selectGender": "Select Gender",
   "profileTitle": "Profile",
   "editProfile": "Edit profile",
   "audioGuidance": "Audio Guidance",
