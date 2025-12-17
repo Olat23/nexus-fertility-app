@@ -6,7 +6,6 @@ import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart'
 import 'services/auth_service.dart';
 import 'services/localization_provider.dart' as loc_provider;
 import 'services/tts_service.dart';
-import 'services/encouragement_service.dart';
 import 'screens/onboarding/language_selection_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/auth/register_screen.dart';
@@ -16,6 +15,9 @@ import 'screens/audio/audio_hub_screen.dart';
 import 'screens/support/support_screen.dart';
 import 'screens/tracking/cycle_input_screen.dart';
 import 'screens/tracking/calendar_screen.dart';
+import 'screens/profile/profile_screen.dart';
+import 'screens/settings/settings_screen.dart';
+import 'screens/tracking/sex_timing_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +38,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<AuthServiceImpl>(
           create: (_) => AuthServiceImpl(),
         ),
-        ChangeNotifierProvider<TtsService>(
+            ChangeNotifierProvider<TtsService>(
           create: (_) => TtsService(),
         ),
         ChangeNotifierProvider<EncouragementService>(
@@ -83,6 +85,9 @@ class MyApp extends StatelessWidget {
               '/support': (context) => const SupportScreen(),
               '/calendar': (context) => const CalendarScreen(),
               '/cycle_input': (context) => const CycleInputScreen(),
+              '/profile': (context) => const ProfileScreen(),
+              '/settings': (context) => const SettingsScreen(),
+              '/sex_timing': (context) => const SexTimingPreferencesScreen(),
             },
           );
         },

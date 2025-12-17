@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../services/tts_service.dart';
+import '../../services/localization_provider.dart';
 
 class AudioHubScreen extends StatelessWidget {
   const AudioHubScreen({super.key});
@@ -22,11 +23,12 @@ class AudioHubScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = Provider.of<LocalizationProvider>(context);
     final tts = Provider.of<TtsService>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Audio Learning'),
+        title: Text(loc.translate('audioLessons')),
       ),
       body: ListView.separated(
         padding: const EdgeInsets.all(16),

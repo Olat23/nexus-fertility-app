@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart';
 import '../../services/auth_service.dart';
 import '../../services/auth_error_helper.dart';
+import '../../services/localization_provider.dart';
 
 class ProfileSetupScreen extends StatefulWidget {
   const ProfileSetupScreen({super.key});
@@ -17,6 +18,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   int _age = 27;
   int _cycleLength = 28;
   DateTime? _lastPeriodDate;
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   String? _ttcHistory;
   String? _faithPreference;
   String _language = 'English';
@@ -42,11 +45,12 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     'None'
   ];
 
-  final List<String> _languages = [
-    'English',
-    'Yoruba',
-    'Igbo',
-    'Hausa',
+  // Use supported locales in app localization
+  final List<Map<String, String>> _languages = [
+    {'code': 'en', 'label': 'English'},
+    {'code': 'yo', 'label': 'Yorùbá'},
+    {'code': 'ig', 'label': 'Igbo'},
+    {'code': 'ha', 'label': 'Hausa'},
   ];
 
   @override
@@ -62,7 +66,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         ),
         centerTitle: true,
         title: Text(
-          AppLocalizations.of(context)!.profile,
+          AppLocalizations.of(context)!.profileTitle,
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -109,6 +113,22 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 ),
               ),
               const SizedBox(height: 32),
+
+                  // First / Last name
+                  _buildFieldLabel('First name'),
+                  TextFormField(
+                    controller: _firstNameController,
+                    decoration: const InputDecoration(hintText: 'First name'),
+                    validator: (v) => (v == null || v.isEmpty) ? 'Enter your first name' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildFieldLabel('Last name'),
+                  TextFormField(
+                    controller: _lastNameController,
+                    decoration: const InputDecoration(hintText: 'Last name'),
+                    validator: (v) => (v == null || v.isEmpty) ? 'Enter your last name' : null,
+                  ),
+                  const SizedBox(height: 24),
 
                   // Age
                   _buildFieldLabel(AppLocalizations.of(context)!.age),
@@ -223,20 +243,25 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       border: Border.all(color: Colors.grey.shade300),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: DropdownButton<String>(
-                      value: _language,
-                      isExpanded: true,
-                      underline: const SizedBox(),
-                      items: _languages.map((lang) {
-                        return DropdownMenuItem(
-                          value: lang,
-                          child: Text(lang),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() => _language = value ?? 'English');
-                      },
-                    ),
+                    child: Builder(builder: (ctx) {
+                      final provider = Provider.of<LocalizationProvider>(context, listen: false);
+                      return DropdownButton<String>(
+                        value: _language,
+                        isExpanded: true,
+                        underline: const SizedBox(),
+                        items: _languages.map((lang) {
+                          return DropdownMenuItem(
+                            value: lang['label'],
+                            child: Text(lang['label']!),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() => _language = value ?? 'English');
+                          final selected = _languages.firstWhere((l) => l['label'] == value, orElse: () => {'code': 'en'});
+                          provider.setLocaleByLanguageCode(selected['code']!);
+                        },
+                      );
+                    }),
                   ),
                   const SizedBox(height: 20),
 
@@ -311,7 +336,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                                 ),
                               ),
                             )
-                          : Text(
+                            : Text(
                               AppLocalizations.of(context)!.continueText,
                               style: const TextStyle(
                                 fontSize: 16,
@@ -427,8 +452,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
       await authService.updateUserProfile(
         userId: currentUser.id ?? '',
-        firstName: currentUser.firstName,
-        lastName: currentUser.lastName,
+        firstName: _firstNameController.text.trim(),
+        lastName: _lastNameController.text.trim(),
       );
 
       if (mounted) {
@@ -465,6 +490,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
   @override
   void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     super.dispose();
   }
 }

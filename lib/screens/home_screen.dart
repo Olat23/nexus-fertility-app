@@ -20,9 +20,27 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         title: const Icon(Icons.menu, color: Colors.black),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.more_horiz, color: Colors.black),
-            onPressed: () {},
+          PopupMenuButton<String>(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Row(
+                children: const [
+                  Text('Menu', style: TextStyle(color: Colors.black)),
+                  SizedBox(width: 6),
+                  Icon(Icons.more_vert, color: Colors.black),
+                ],
+              ),
+            ),
+            onSelected: (value) {
+              if (value == 'profile') Navigator.of(context).pushNamed('/profile');
+              if (value == 'settings') Navigator.of(context).pushNamed('/settings');
+              if (value == 'sex_timing') Navigator.of(context).pushNamed('/sex_timing');
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(value: 'profile', child: Text('Profile')),
+              const PopupMenuItem(value: 'settings', child: Text('Settings')),
+              const PopupMenuItem(value: 'sex_timing', child: Text('Sex Timing Preferences')),
+            ],
           ),
         ],
       ),
@@ -112,8 +130,14 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 24),
 
           // Quick Actions (navigate to specific screens)
-          Row(
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            physics: const NeverScrollableScrollPhysics(),
             children: [
+<<<<<<< HEAD
               Expanded(
                 child: _buildQuickActionCard(
                   AppLocalizations.of(context)!.calendar,
@@ -129,6 +153,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   () => Navigator.of(context).pushNamed('/audio'),
                 ),
               ),
+=======
+              _buildQuickActionCard('Calendar', Icons.calendar_today, () => Navigator.of(context).pushNamed('/calendar')),
+              _buildQuickActionCard('Learn Hub', Icons.school, () => Navigator.of(context).pushNamed('/audio')),
+              _buildQuickActionCard('Support', Icons.favorite_border, () => Navigator.of(context).pushNamed('/support')),
+              _buildQuickActionCard('Track Cycle', Icons.track_changes, () => Navigator.of(context).pushNamed('/cycle_input')),
+>>>>>>> 83ff97c (feat: Add Nigerian localization (Yorùbá, Igbo, Hausa) and complete screen suite)
             ],
           ),
           const SizedBox(height: 24),

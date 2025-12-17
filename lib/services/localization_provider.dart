@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
 
 class LocalizationProvider extends ChangeNotifier {
   static const _prefsKey = 'app_locale';
 
   static const supportedLocales = [
     Locale('en'),
+<<<<<<< HEAD
     Locale('yo'), // Yoruba
     Locale('ig'), // Igbo
     Locale('ha'), // Hausa
+=======
+    Locale('yo'),
+    Locale('ig'),
+    Locale('ha'),
+>>>>>>> 83ff97c (feat: Add Nigerian localization (Yorùbá, Igbo, Hausa) and complete screen suite)
   ];
 
   static const localizationsDelegates = [
@@ -20,6 +27,91 @@ class LocalizationProvider extends ChangeNotifier {
 
   Locale _locale = const Locale('en');
   Locale get locale => _locale;
+
+  // Simple runtime translation map for quick wiring of new screens.
+  static const Map<String, Map<String, String>> _localizedValues = {
+    'en': {
+      'profileTitle': 'Profile',
+      'editProfile': 'Edit profile',
+      'audioGuidance': 'Audio Guidance',
+      'ttcHistory': 'TTC History',
+      'faithPreference': 'Faith Preference',
+      'cycleLength': 'Cycle Length',
+      'lastPeriodDate': 'Last Period Date',
+      'continue': 'Continue',
+      'joined': 'Joined',
+      'audioLessons': 'Audio Learning',
+      'play': 'Play',
+      'stop': 'Stop',
+      'supportHub': 'Support Hub',
+      'dailyAffirmation': 'Daily Affirmations',
+      'chooseSupportMode': 'Choose your support mode',
+      'exploreCommunityGroups': 'Explore Community Groups'
+    },
+    'yo': {
+      'profileTitle': 'Profile',
+      'editProfile': 'Edit profile',
+      'audioGuidance': 'Audio Guidance',
+      'ttcHistory': 'TTC History',
+      'faithPreference': 'Faith Preference',
+      'cycleLength': 'Cycle Length',
+      'lastPeriodDate': 'Last Period Date',
+      'continue': 'Continue',
+      'joined': 'Joined',
+      'audioLessons': 'Audio Learning',
+      'play': 'Play',
+      'stop': 'Stop',
+      'supportHub': 'Support Hub',
+      'dailyAffirmation': 'Daily Affirmations',
+      'chooseSupportMode': 'Choose your support mode',
+      'exploreCommunityGroups': 'Explore Community Groups'
+    },
+    'ig': {
+      'profileTitle': 'Profile',
+      'editProfile': 'Edit profile',
+      'audioGuidance': 'Audio Guidance',
+      'ttcHistory': 'TTC History',
+      'faithPreference': 'Faith Preference',
+      'cycleLength': 'Cycle Length',
+      'lastPeriodDate': 'Last Period Date',
+      'continue': 'Continue',
+      'joined': 'Joined',
+      'audioLessons': 'Audio Learning',
+      'play': 'Play',
+      'stop': 'Stop',
+      'supportHub': 'Support Hub',
+      'dailyAffirmation': 'Daily Affirmations',
+      'chooseSupportMode': 'Choose your support mode',
+      'exploreCommunityGroups': 'Explore Community Groups'
+    },
+    'ha': {
+      'profileTitle': 'Profile',
+      'editProfile': 'Edit profile',
+      'audioGuidance': 'Audio Guidance',
+      'ttcHistory': 'TTC History',
+      'faithPreference': 'Faith Preference',
+      'cycleLength': 'Cycle Length',
+      'lastPeriodDate': 'Last Period Date',
+      'continue': 'Continue',
+      'joined': 'Joined',
+      'audioLessons': 'Audio Learning',
+      'play': 'Play',
+      'stop': 'Stop',
+      'supportHub': 'Support Hub',
+      'dailyAffirmation': 'Daily Affirmations',
+      'chooseSupportMode': 'Choose your support mode',
+      'exploreCommunityGroups': 'Explore Community Groups'
+    }
+  };
+
+  String translate(String key) {
+    try {
+      final code = _locale.languageCode;
+      return _localizedValues[code]?[key] ?? _localizedValues['en']?[key] ?? key;
+    } catch (e) {
+      return key;
+    }
+  }
 
   LocalizationProvider() {
     _loadFromPrefs();
