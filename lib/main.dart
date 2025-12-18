@@ -6,6 +6,7 @@ import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart'
 import 'services/auth_service.dart';
 import 'services/localization_provider.dart' as loc_provider;
 import 'services/tts_service.dart';
+import 'theme.dart';
 import 'screens/onboarding/language_selection_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/auth/register_screen.dart';
@@ -18,6 +19,13 @@ import 'screens/tracking/calendar_screen.dart';
 import 'screens/profile/profile_screen.dart';
 import 'screens/settings/settings_screen.dart';
 import 'screens/tracking/sex_timing_screen.dart';
+import 'screens/privacy/privacy_screen.dart';
+import 'screens/community/community_groups_screen.dart';
+import 'screens/community/community_group_display_screen.dart';
+import 'screens/prediction/prediction_screen.dart';
+import 'screens/educational/educational_hub_screen.dart';
+import 'screens/goals/goals_update_screen.dart';
+import 'screens/settings/settings_profile_setup_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,7 +56,7 @@ class MyApp extends StatelessWidget {
       child: Consumer<loc_provider.LocalizationProvider>(
         builder: (context, localizationProvider, _) {
           return MaterialApp(
-            title: 'Ferti Path',
+            title: 'Nexus Fertility',
             theme: ThemeData(
               useMaterial3: true,
               colorScheme: ColorScheme.fromSeed(
@@ -88,6 +96,13 @@ class MyApp extends StatelessWidget {
               '/profile': (context) => const ProfileScreen(),
               '/settings': (context) => const SettingsScreen(),
               '/sex_timing': (context) => const SexTimingPreferencesScreen(),
+              '/privacy': (context) => const PrivacyScreen(),
+              '/community_groups': (context) => const CommunityGroupsScreen(),
+              '/community_group': (context) => const CommunityGroupDisplayScreen(),
+              '/prediction': (context) => const PredictionScreen(),
+              '/educational': (context) => const EducationalHubScreen(),
+              '/goals_update': (context) => const GoalsUpdateScreen(),
+              '/settings_profile_setup': (context) => const SettingsProfileSetupScreen(),
             },
           );
         },
