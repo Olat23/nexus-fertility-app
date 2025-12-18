@@ -111,14 +111,14 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 24),
 
-          // Quick Actions
+          // Quick Actions (navigate to specific screens)
           Row(
             children: [
               Expanded(
                 child: _buildQuickActionCard(
                   AppLocalizations.of(context)!.calendar,
                   Icons.calendar_today,
-                  () => setState(() => _selectedIndex = 1),
+                  () => Navigator.of(context).pushNamed('/calendar'),
                 ),
               ),
               const SizedBox(width: 12),
@@ -126,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: _buildQuickActionCard(
                   AppLocalizations.of(context)!.learnHub,
                   Icons.school,
-                  () => setState(() => _selectedIndex = 2),
+                  () => Navigator.of(context).pushNamed('/audio'),
                 ),
               ),
             ],
