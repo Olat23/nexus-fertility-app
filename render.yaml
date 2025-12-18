@@ -13,6 +13,7 @@ services:
       flutter config --enable-web &&
       flutter pub get &&
       flutter build web --release
+    staticPublishPath: build/web
     envVars:
       - key: API_URL
         value: "https://team-nexus.onrender.com"
