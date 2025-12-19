@@ -4,6 +4,7 @@ import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart'
 import '../../services/auth_service.dart';
 
 import '../../services/auth_error_helper.dart';
+import '../../services/localization_provider.dart';
 
 
 class ProfileSetupScreen extends StatefulWidget {
@@ -23,7 +24,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   final TextEditingController _lastNameController = TextEditingController();
   String? _ttcHistory;
   String? _faithPreference;
-  String _language = 'English';
+  String _languageCode = 'en';
   bool _audioGuidance = false;
   bool _isLoading = false;
   bool _acceptTerms = false;
@@ -46,14 +47,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     'None'
   ];
 
-
-  final List<String> _languages = [
-    'English',
-    'Yoruba',
-    'Igbo',
-    'Hausa',
-
-  ];
+  // Language options are built in build() to ensure labels are localized
 
   @override
   Widget build(BuildContext context) {
@@ -119,17 +113,17 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               const SizedBox(height: 32),
 
                   // First / Last name
-                  _buildFieldLabel('First name'),
+                  _buildFieldLabel(AppLocalizations.of(context)!.firstName),
                   TextFormField(
                     controller: _firstNameController,
-                    decoration: const InputDecoration(hintText: 'First name'),
+                    decoration: InputDecoration(hintText: AppLocalizations.of(context)!.firstName),
                     validator: (v) => (v == null || v.isEmpty) ? 'Enter your first name' : null,
                   ),
                   const SizedBox(height: 16),
-                  _buildFieldLabel('Last name'),
+                  _buildFieldLabel(AppLocalizations.of(context)!.lastName),
                   TextFormField(
                     controller: _lastNameController,
-                    decoration: const InputDecoration(hintText: 'Last name'),
+                    decoration: InputDecoration(hintText: AppLocalizations.of(context)!.lastName),
                     validator: (v) => (v == null || v.isEmpty) ? 'Enter your last name' : null,
                   ),
                   const SizedBox(height: 24),
@@ -198,7 +192,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                             child: Text(
                               _lastPeriodDate == null
                                   ? AppLocalizations.of(context)!.selectDate
-                                  : '${_lastPeriodDate!.day}, Dec ${_lastPeriodDate!.year}',
+                                  : MaterialLocalizations.of(context).formatMediumDate(_lastPeriodDate!),
                               style: TextStyle(
                                 fontSize: 16,
                                 color: _lastPeriodDate == null
@@ -249,20 +243,26 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                     ),
                     child: Builder(builder: (ctx) {
                       final provider = Provider.of<LocalizationProvider>(context, listen: false);
+                      final options = [
+                        {'code': 'en', 'label': AppLocalizations.of(context)!.english},
+                        {'code': 'yo', 'label': AppLocalizations.of(context)!.yoruba},
+                        {'code': 'ig', 'label': AppLocalizations.of(context)!.igbo},
+                        {'code': 'ha', 'label': AppLocalizations.of(context)!.hausa},
+                      ];
                       return DropdownButton<String>(
-                        value: _language,
+                        value: _languageCode,
                         isExpanded: true,
                         underline: const SizedBox(),
-                        items: _languages.map((lang) {
-                          return DropdownMenuItem(
-                            value: lang['label'],
-                            child: Text(lang['label']!),
-                          );
-                        }).toList(),
+                        items: options
+                            .map((o) => DropdownMenuItem<String>(
+                                  value: o['code']!,
+                                  child: Text(o['label']!),
+                                ))
+                            .toList(),
                         onChanged: (value) {
-                          setState(() => _language = value ?? 'English');
-                          final selected = _languages.firstWhere((l) => l['label'] == value, orElse: () => {'code': 'en'});
-                          provider.setLocaleByLanguageCode(selected['code']!);
+                          if (value == null) return;
+                          setState(() => _languageCode = value);
+                          provider.setLocaleByLanguageCode(value);
                         },
                       );
                     }),
