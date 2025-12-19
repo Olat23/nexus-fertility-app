@@ -96,6 +96,7 @@ class _AccountTypeCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const _AccountTypeCard({
+    super.key,
     required this.icon,
     required this.title,
     required this.subtitle,

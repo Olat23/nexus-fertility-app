@@ -20,3 +20,4 @@ class AuthErrorCodes {
   static const String userNotFound = 'AUTH_USER_NOT_FOUND';
   static const String noUserLoggedIn = 'AUTH_NO_USER_LOGGED_IN';
 }
+

@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart';
 import '../../services/auth_service.dart';
+
 import '../../services/auth_error_helper.dart';
-import '../../services/localization_provider.dart';
-import '../../theme.dart';
 
 class ProfileSetupScreen extends StatefulWidget {
   const ProfileSetupScreen({super.key});
@@ -46,12 +45,12 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     'None'
   ];
 
-  // Use supported locales in app localization
-  final List<Map<String, String>> _languages = [
-    {'code': 'en', 'label': 'English'},
-    {'code': 'yo', 'label': 'Yorùbá'},
-    {'code': 'ig', 'label': 'Igbo'},
-    {'code': 'ha', 'label': 'Hausa'},
+
+  final List<String> _languages = [
+    'English',
+    'Yoruba',
+    'Igbo',
+    'Hausa',
   ];
 
   @override
@@ -67,7 +66,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         ),
         centerTitle: true,
         title: Text(
-          Provider.of<LocalizationProvider>(context).translate('profileTitle'),
+          AppLocalizations.of(context)!.profile,
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -340,7 +339,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                               ),
                             )
                           : Text(
-                              Provider.of<LocalizationProvider>(context).translate('continue'),
+                              AppLocalizations.of(context)!.continueText,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
@@ -498,3 +497,5 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     super.dispose();
   }
 }
+
+

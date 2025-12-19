@@ -18,6 +18,7 @@ services:
       - key: API_URL
         value: "https://fertipath-backend.onrender.com" 
 
+
 # Flutter Mobile Service (Android) - iOS coming soon
 #  - type: web
 #    name: fertility-android-frontend
@@ -36,3 +37,4 @@ services:
 #    envVars:
 #      - key: API_URL
 #        value: "https://team-nexus.onrender.com"
+

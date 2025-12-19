@@ -32,3 +32,4 @@ String getAuthErrorMessage(BuildContext context, dynamic error) {
   // Fallback for other exceptions
   return error.toString().replaceAll('Exception: ', '');
 }
+

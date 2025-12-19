@@ -3,7 +3,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalizationProvider extends ChangeNotifier {
-  static const _prefsKey = 'app_locale';
+  Locale _locale = const Locale('en');
+
+  Locale get locale => _locale;
 
   static const supportedLocales = [
     Locale('en'),
@@ -134,9 +136,8 @@ class LocalizationProvider extends ChangeNotifier {
   }
 
   void setLocale(Locale locale) {
-    if (supportedLocales.any((l) => l.languageCode == locale.languageCode)) {
-      _locale = Locale(locale.languageCode);
-      _saveToPrefs(_locale.languageCode);
+    if (supportedLocales.contains(locale)) {
+      _locale = locale;
       notifyListeners();
     }
   }
@@ -144,4 +145,4 @@ class LocalizationProvider extends ChangeNotifier {
   void setLocaleByLanguageCode(String languageCode) {
     setLocale(Locale(languageCode));
   }
-}
+

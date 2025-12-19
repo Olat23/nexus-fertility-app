@@ -12,6 +12,7 @@ jobs:
 
         env: 
             API_URL: https://fertipath-backend.onrender.com
+            FIREBASE_CREDENTIALS: ${{ secrets.FIREBASE_CREDENTIALS }}
         steps:
             - name: Checkout code
               uses: actions/checkout@v6
@@ -45,15 +46,18 @@ jobs:
             - name: Accept Android licenses
               run: yes | flutter doctor --android-licenses
 
+            - name: Create Firebase credentials file
+              run: echo "$FIREBASE_CREDENTIALS" > firebase_credentials.json
+
             - name: Build APK
-              run: flutter build apk --release --dart-define=API_URL=$API_URL
+              run: flutter build apk --release --dart-define=API_URL=$API_URL 
             - name: Upload APK artifact
               uses: actions/upload-artifact@v4
               with:
                 name: app-release-apk
                 path: build/app/outputs/flutter-apk/app-release.apk
             - name: Build App Bundle
-              run: flutter build appbundle --release --dart-define=API_URL=$API_URL
+              run: flutter build appbundle --release --dart-define=API_URL=$API_URL 
             - name: Upload App Bundle artifact
               uses: actions/upload-artifact@v4
               with:
@@ -64,6 +68,9 @@ jobs:
     ios:
         name: Build iOS App & Run Tests
         runs-on: macos-latest
+        env:
+            API_URL: https://fertipath-backend.onrender.com
+            FIREBASE_CREDENTIALS: ${{ secrets.FIREBASE_CREDENTIALS }}
         steps:
             - name: Checkout code
               uses: actions/checkout@v6
@@ -71,7 +78,12 @@ jobs:
               uses: subosito/flutter-action@v2
               with:
                 flutter-version: '3.38.0'
-                channel: 'stable'
+                channel: stable
+            - name: Accept iOS licenses
+              run: sudo xcodebuild -license accept || true
+
+            - name: Create Firebase credentials file
+              run: echo "$FIREBASE_CREDENTIALS" > firebase_credentials.json
             - name: Install dependencies
               run: flutter pub get
 
@@ -83,13 +95,12 @@ jobs:
               with:
                 name: coverage-ios
                 path: coverage/lcov.info
-
-          
             - name: Build iOS app
-              run: flutter build ios --release --no-codesign --dart-define=API_URL=$API_URL
+              run: flutter build ios --release --no-codesign --dart-define=API_URL=$API_URL 
             - name: Upload iOS app artifact
               uses: actions/upload-artifact@v4
               with:
                 name: ios-app
                 path: build/ios/iphoneos/Runner.app
+
 
