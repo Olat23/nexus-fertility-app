@@ -1,23 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/foundation.dart';
 
 class LocalizationProvider extends ChangeNotifier {
   static const _prefsKey = 'app_locale';
 
   static const supportedLocales = [
     Locale('en'),
-<<<<<<< HEAD
     Locale('yo'), // Yoruba
     Locale('ig'), // Igbo
     Locale('ha'), // Hausa
-=======
-    Locale('yo'),
-    Locale('ig'),
-    Locale('ha'),
->>>>>>> 83ff97c (feat: Add Nigerian localization (Yorùbá, Igbo, Hausa) and complete screen suite)
-  ];
+ ];
 
   static const localizationsDelegates = [
     GlobalMaterialLocalizations.delegate,

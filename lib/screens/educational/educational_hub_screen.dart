@@ -12,7 +12,7 @@ class EducationalHubScreen extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(children: [
-          Container(padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
+          Container(padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)), child: const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text('Fertility Basics', style: TextStyle(fontWeight: FontWeight.bold)),
             SizedBox(height: 8),
             Text('Infertility isn\'t a curse - educational article preview...'),

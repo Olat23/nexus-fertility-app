@@ -19,9 +19,9 @@ class PrivacyScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text('Data Privacy and Policy', style: TextStyle(fontWeight: FontWeight.bold)),
                   SizedBox(height: 8),
                   Text('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
@@ -32,7 +32,7 @@ class PrivacyScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
+              child: const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text('Manage Data & Permissions', style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 8),
                 Text('Control what data we store and how we use it.'),

@@ -24,7 +24,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   String? _ttcHistory;
   String? _faithPreference;
   String _language = 'English';
-  bool _audioGuidance = false;
+  final bool _audioGuidance = false;
   bool _isLoading = false;
   bool _acceptTerms = false;
 

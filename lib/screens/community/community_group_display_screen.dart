@@ -16,7 +16,7 @@ class CommunityGroupDisplayScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
+              child: const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text('Connect with others who understand your journey. Join support groups for encouragement and shared experiences.'),
                 SizedBox(height: 12),
                 ListTile(leading: CircleAvatar(child: Text('A')), title: Text('ADMIN'), subtitle: Text('Connect with others who understand your journey.')),
@@ -25,7 +25,7 @@ class CommunityGroupDisplayScreen extends StatelessWidget {
               ]),
             ),
             const SizedBox(height: 12),
-            Container(padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)), child: Row(children: [Expanded(child: TextField(decoration: InputDecoration(hintText: 'Type a message...'))), IconButton(onPressed: () {}, icon: const Icon(Icons.send))])),
+            Container(padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)), child: Row(children: [const Expanded(child: TextField(decoration: InputDecoration(hintText: 'Type a message...'))), IconButton(onPressed: () {}, icon: const Icon(Icons.send))])),
           ],
         ),
       ),

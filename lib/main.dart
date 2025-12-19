@@ -79,7 +79,7 @@ class MyApp extends StatelessWidget {
             ),
             locale: localizationProvider.locale,
             supportedLocales: AppLocalizations.supportedLocales,
-            localizationsDelegates: [
+            localizationsDelegates: const [
               AppLocalizations.delegate,
               ...loc_provider.LocalizationProvider.localizationsDelegates,
             ],

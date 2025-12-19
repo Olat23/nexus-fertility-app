@@ -75,7 +75,6 @@
   "genderMale": "Male",
   "genderFemale": "Female",
   "genderOther": "Other",
-{
   "@@locale": "en",
   "appTitle": "Nexus Fertility",
   "welcomeTitle": "Welcome to Nexus Fertility",

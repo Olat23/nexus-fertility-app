@@ -17,15 +17,15 @@ class GoalsUpdateScreen extends StatelessWidget {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const Text('Start Date'),
             const SizedBox(height: 8),
-            TextField(decoration: const InputDecoration(hintText: '15/06/2025')),
+            const TextField(decoration: InputDecoration(hintText: '15/06/2025')),
             const SizedBox(height: 12),
             const Text('Primary Goal'),
             const SizedBox(height: 8),
-            TextField(decoration: const InputDecoration(hintText: 'Conceive')),
+            const TextField(decoration: InputDecoration(hintText: 'Conceive')),
             const SizedBox(height: 12),
             const Text('Cycle Length'),
             const SizedBox(height: 8),
-            TextField(decoration: const InputDecoration(hintText: '28')),
+            const TextField(decoration: InputDecoration(hintText: '28')),
             const SizedBox(height: 16),
             SizedBox(width: double.infinity, child: ElevatedButton(onPressed: () {}, child: const Text('Update')))
           ]),

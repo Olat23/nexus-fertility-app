@@ -12,13 +12,13 @@ class PredictionScreen extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(children: [
-          Container(padding: const EdgeInsets.all(16), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
+          Container(padding: const EdgeInsets.all(16), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)), child: const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text('PredictBot', style: TextStyle(fontWeight: FontWeight.bold)),
             SizedBox(height: 8),
             Text('This tool provides a prediction of your fertile window. Always confirm with your clinician.'),
           ])),
           const SizedBox(height: 12),
-          Container(padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)), child: Column(children: const [
+          Container(padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)), child: const Column(children: [
             ListTile(leading: Icon(Icons.calendar_today), title: Text('Mark on calendar')),
             ListTile(leading: Icon(Icons.medical_services), title: Text('Verify Prediction with a Doctor')),
           ]))
