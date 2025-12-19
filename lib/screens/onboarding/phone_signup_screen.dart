@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../../services/auth_service.dart';
-import 'phone_otp_verification_screen.dart';
+import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart';
+import '../../services/auth_service.dart';import '../../services/auth_error_helper.dart';import 'phone_otp_verification_screen.dart';
 
 class PhoneSignupScreen extends StatefulWidget {
   const PhoneSignupScreen({super.key});
@@ -73,9 +73,9 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 24),
-                  const Text(
-                    'Create Account with Phone',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.phoneSignupTitle,
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.deepPurple,
@@ -83,7 +83,7 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'We will send you an OTP code',
+                    AppLocalizations.of(context)!.phoneSignupSubtitle,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey.shade600,
@@ -93,7 +93,7 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
 
                   // Phone Number Field
                   Text(
-                    'Phone Number',
+                    AppLocalizations.of(context)!.phoneNumberLabel,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -135,7 +135,7 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
                         child: TextFormField(
                           controller: _phoneController,
                           decoration: InputDecoration(
-                            hintText: 'Phone number',
+                            hintText: AppLocalizations.of(context)!.phoneNumberHint,
                             fillColor: Colors.white,
                             filled: true,
                             border: OutlineInputBorder(
@@ -168,11 +168,11 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
                           ],
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Phone is required';
+                              return AppLocalizations.of(context)!.phoneRequired;
                             }
                             final expectedLength = _countryCodeLengths[_selectedCountryCode] ?? 10;
                             if (value.length != expectedLength) {
-                              return 'Invalid phone number for this country';
+                              return AppLocalizations.of(context)!.invalidPhoneForCountry;
                             }
                             return null;
                           },
@@ -199,7 +199,7 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            'We\'ll send an OTP code to verify your phone number',
+                            AppLocalizations.of(context)!.otpInfoMessage,
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.blue.shade700,
@@ -235,9 +235,9 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
                                 ),
                               ),
                             )
-                          : const Text(
-                              'Continue',
-                              style: TextStyle(
+                          : Text(
+                              AppLocalizations.of(context)!.continueText,
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
@@ -285,7 +285,7 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.toString().replaceAll('Exception: ', '')),
+            content: Text(getAuthErrorMessage(context, e)),
             backgroundColor: Colors.red,
           ),
         );

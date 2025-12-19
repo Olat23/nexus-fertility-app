@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
+import 'auth_exception.dart';
 
 abstract class AuthService {
   Future<User?> signUpWithEmail({
@@ -140,19 +141,19 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
     try {
       // Validate email format
       if (!_isValidEmail(email)) {
-        throw Exception('Invalid email format');
+        throw AuthException(AuthErrorCodes.invalidEmail);
       }
 
       // Validate password strength
       if (password.length < 8) {
-        throw Exception('Password must be at least 8 characters');
+        throw AuthException(AuthErrorCodes.passwordTooShort);
       }
 
       // Check if user already exists
       await _ensurePrefs();
       final existingUser = _getString('user_$email');
       if (existingUser != null) {
-        throw Exception('Email already registered');
+        throw AuthException(AuthErrorCodes.emailAlreadyRegistered);
       }
 
       // Create user object
@@ -183,14 +184,14 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
     try {
       // Validate phone format
       if (!_isValidPhoneNumber(phoneNumber)) {
-        throw Exception('Invalid phone number format');
+        throw AuthException(AuthErrorCodes.invalidPhone);
       }
 
       // Check if phone already registered
       await _ensurePrefs();
       final existingUser = _getString('user_$phoneNumber');
       if (existingUser != null) {
-        throw Exception('Phone number already registered');
+        throw AuthException(AuthErrorCodes.phoneAlreadyRegistered);
       }
 
       // Create user object
@@ -222,7 +223,7 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
     try {
       // In production, verify OTP with backend
       if (otp.length != 6) {
-        throw Exception('Invalid OTP format');
+        throw AuthException(AuthErrorCodes.invalidOtpFormat);
       }
 
       // Simulate OTP verification (in production, call backend)
@@ -232,7 +233,7 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
       await _ensurePrefs();
       final tempUserJson = _getString('temp_user_$email');
       if (tempUserJson == null) {
-        throw Exception('User not found');
+        throw AuthException(AuthErrorCodes.userNotFound);
       }
 
       // Update user with verified email
@@ -260,7 +261,7 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
   }) async {
     try {
       if (otp.length != 6) {
-        throw Exception('Invalid OTP format');
+        throw AuthException(AuthErrorCodes.invalidOtpFormat);
       }
 
       debugPrint('Verifying OTP: $otp for phone: $phoneNumber');
@@ -269,7 +270,7 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
       await _ensurePrefs();
       final tempUserJson = _getString('temp_user_$phoneNumber');
       if (tempUserJson == null) {
-        throw Exception('User not found');
+        throw AuthException(AuthErrorCodes.userNotFound);
       }
 
       // Update user with verified phone
@@ -294,7 +295,7 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
   Future<bool> resendEmailOTP({required String email}) async {
     try {
       if (!_isValidEmail(email)) {
-        throw Exception('Invalid email');
+        throw AuthException(AuthErrorCodes.invalidEmail);
       }
 
       debugPrint('Resending OTP to email: $email');
@@ -310,7 +311,7 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
   Future<bool> resendPhoneOTP({required String phoneNumber}) async {
     try {
       if (!_isValidPhoneNumber(phoneNumber)) {
-        throw Exception('Invalid phone number');
+        throw AuthException(AuthErrorCodes.invalidPhone);
       }
 
       debugPrint('Resending OTP to phone: $phoneNumber');
@@ -333,7 +334,7 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
   }) async {
     try {
       if (_currentUser == null) {
-        throw Exception('No user logged in');
+        throw AuthException(AuthErrorCodes.noUserLoggedIn);
       }
 
       final updatedUser = _currentUser!.copyWith(
@@ -364,7 +365,7 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
       await _ensurePrefs();
       final userJson = _getString('user_$email');
       if (userJson == null) {
-        throw Exception('User not found');
+        throw AuthException(AuthErrorCodes.userNotFound);
       }
       _loadUserFromPrefs();
       return _currentUser;

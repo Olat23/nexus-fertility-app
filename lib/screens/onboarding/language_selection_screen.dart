@@ -1,6 +1,7 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../services/localization_provider.dart';
+import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart';
+import '../../services/localization_provider.dart' as loc_provider;
 import 'welcome_screen.dart';
 
 class LanguageSelectionScreen extends StatelessWidget {
@@ -42,9 +43,9 @@ class LanguageSelectionScreen extends StatelessWidget {
                       color: Colors.deepPurple,
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'Select Language',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.selectLanguage,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.deepPurple,
@@ -52,7 +53,7 @@ class LanguageSelectionScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Choose your preferred language',
+                      AppLocalizations.of(context)!.choosePreferredLanguage,
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey.shade600,
@@ -84,7 +85,8 @@ class LanguageSelectionScreen extends StatelessWidget {
                         name: language['name']!,
                         code: language['code']!,
                         onTap: () {
-                          context.read<LocalizationProvider>()
+                            context
+                              .read<loc_provider.LocalizationProvider>()
                               .setLocaleByLanguageCode(language['code']!);
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(

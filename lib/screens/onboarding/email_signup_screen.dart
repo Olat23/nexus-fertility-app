@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart';
 import '../../services/auth_service.dart';
+import '../../services/auth_error_helper.dart';
 import 'email_otp_verification_screen.dart';
 
 class EmailSignupScreen extends StatefulWidget {
@@ -51,9 +53,9 @@ class _EmailSignupScreenState extends State<EmailSignupScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 24),
-                  const Text(
-                    'Create Account with Email',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.emailSignupTitle,
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.deepPurple,
@@ -61,7 +63,7 @@ class _EmailSignupScreenState extends State<EmailSignupScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Enter your email and password',
+                    AppLocalizations.of(context)!.emailSignupSubtitle,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey.shade600,
@@ -71,7 +73,7 @@ class _EmailSignupScreenState extends State<EmailSignupScreen> {
 
                   // Email Field
                   Text(
-                    'Email Address',
+                    AppLocalizations.of(context)!.emailAddressLabel,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -82,7 +84,7 @@ class _EmailSignupScreenState extends State<EmailSignupScreen> {
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
-                      hintText: 'you@example.com',
+                      hintText: AppLocalizations.of(context)!.emailHint,
                       prefixIcon: const Icon(Icons.email_outlined),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -95,12 +97,12 @@ class _EmailSignupScreenState extends State<EmailSignupScreen> {
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Email is required';
+                        return AppLocalizations.of(context)!.emailRequired;
                       }
                       if (!RegExp(
                               r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
                           .hasMatch(value)) {
-                        return 'Invalid email format';
+                        return AppLocalizations.of(context)!.invalidEmailFormat;
                       }
                       return null;
                     },
@@ -109,7 +111,7 @@ class _EmailSignupScreenState extends State<EmailSignupScreen> {
 
                   // Password Field
                   Text(
-                    'Password',
+                    AppLocalizations.of(context)!.password,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -121,7 +123,7 @@ class _EmailSignupScreenState extends State<EmailSignupScreen> {
                     controller: _passwordController,
                     obscureText: !_showPassword,
                     decoration: InputDecoration(
-                      hintText: 'Enter password',
+                      hintText: AppLocalizations.of(context)!.passwordHint,
                       prefixIcon: const Icon(Icons.lock_outlined),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -145,10 +147,10 @@ class _EmailSignupScreenState extends State<EmailSignupScreen> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Password is required';
+                        return AppLocalizations.of(context)!.passwordRequired;
                       }
                       if (value.length < 8) {
-                        return 'Password must be at least 8 characters';
+                        return AppLocalizations.of(context)!.passwordTooShort;
                       }
                       return null;
                     },
@@ -157,7 +159,7 @@ class _EmailSignupScreenState extends State<EmailSignupScreen> {
 
                   // Confirm Password Field
                   Text(
-                    'Confirm Password',
+                    AppLocalizations.of(context)!.confirmPassword,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -169,7 +171,7 @@ class _EmailSignupScreenState extends State<EmailSignupScreen> {
                     controller: _confirmPasswordController,
                     obscureText: !_showConfirmPassword,
                     decoration: InputDecoration(
-                      hintText: 'Confirm password',
+                      hintText: AppLocalizations.of(context)!.confirmPasswordHint,
                       prefixIcon: const Icon(Icons.lock_outlined),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -193,10 +195,10 @@ class _EmailSignupScreenState extends State<EmailSignupScreen> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please confirm password';
+                        return AppLocalizations.of(context)!.confirmPasswordRequired;
                       }
                       if (value != _passwordController.text) {
-                        return 'Passwords do not match';
+                        return AppLocalizations.of(context)!.passwordMismatch;
                       }
                       return null;
                     },
@@ -227,9 +229,9 @@ class _EmailSignupScreenState extends State<EmailSignupScreen> {
                                 ),
                               ),
                             )
-                          : const Text(
-                              'Create Account',
-                              style: TextStyle(
+                          : Text(
+                              AppLocalizations.of(context)!.createAccount,
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
@@ -276,7 +278,7 @@ class _EmailSignupScreenState extends State<EmailSignupScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.toString().replaceAll('Exception: ', '')),
+            content: Text(getAuthErrorMessage(context, e)),
             backgroundColor: Colors.red,
           ),
         );

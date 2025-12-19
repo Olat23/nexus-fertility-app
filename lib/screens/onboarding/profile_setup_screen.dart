@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart';
 import '../../services/auth_service.dart';
-import '../../services/localization_provider.dart';
+
+import '../../services/auth_error_helper.dart';
+
 
 class ProfileSetupScreen extends StatefulWidget {
   const ProfileSetupScreen({super.key});
@@ -43,12 +46,13 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     'None'
   ];
 
-  // Use supported locales in app localization
-  final List<Map<String, String>> _languages = [
-    {'code': 'en', 'label': 'English'},
-    {'code': 'yo', 'label': 'Yorùbá'},
-    {'code': 'ig', 'label': 'Igbo'},
-    {'code': 'ha', 'label': 'Hausa'},
+
+  final List<String> _languages = [
+    'English',
+    'Yoruba',
+    'Igbo',
+    'Hausa',
+
   ];
 
   @override
@@ -64,7 +68,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         ),
         centerTitle: true,
         title: Text(
-          Provider.of<LocalizationProvider>(context).translate('profileTitle'),
+
+          AppLocalizations.of(context)!.profile,
+
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -94,9 +100,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               const SizedBox(height: 32),
 
               // Title
-              const Text(
-                'Let\'s complete your profile',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context)!.completeProfile,
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
@@ -104,7 +110,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'This will help us personalize your cycle guide',
+                AppLocalizations.of(context)!.personalizeGuide,
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey.shade700,
@@ -129,7 +135,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   const SizedBox(height: 24),
 
                   // Age
-                  _buildFieldLabel('Age'),
+                  _buildFieldLabel(AppLocalizations.of(context)!.age),
                   _buildNumberDropdown(
                     value: _age,
                     items: List.generate(73, (i) => i + 18),
@@ -138,7 +144,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   const SizedBox(height: 20),
 
                   // Cycle Length
-                  _buildFieldLabel('Cycle Length'),
+                  _buildFieldLabel(AppLocalizations.of(context)!.cycleLength),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
@@ -152,7 +158,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       items: List.generate(30, (i) => i + 1).map((days) {
                         return DropdownMenuItem(
                           value: days,
-                          child: Text('$days Days'),
+                          child: Text(AppLocalizations.of(context)!.days(days)),
                         );
                       }).toList(),
                       onChanged: (value) {
@@ -162,7 +168,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Average number of days between your periods',
+                    AppLocalizations.of(context)!.averageDaysBetweenPeriods,
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey.shade600,
@@ -171,7 +177,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   const SizedBox(height: 20),
 
                   // Last Period Date
-                  _buildFieldLabel('Last Period Date'),
+                  _buildFieldLabel(AppLocalizations.of(context)!.lastPeriodDate),
                   GestureDetector(
                     onTap: _selectDate,
                     child: Container(
@@ -191,7 +197,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                           Expanded(
                             child: Text(
                               _lastPeriodDate == null
-                                  ? 'Select date'
+                                  ? AppLocalizations.of(context)!.selectDate
                                   : '${_lastPeriodDate!.day}, Dec ${_lastPeriodDate!.year}',
                               style: TextStyle(
                                 fontSize: 16,
@@ -207,7 +213,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'When your last menstrual bleeding started',
+                    AppLocalizations.of(context)!.whenLastBleeding,
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey.shade600,
@@ -216,7 +222,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   const SizedBox(height: 20),
 
                   // TTC History
-                  _buildFieldLabel('TTC History'),
+                  _buildFieldLabel(AppLocalizations.of(context)!.ttcHistory),
                   _buildDropdown(
                     value: _ttcHistory,
                     items: _ttcHistories,
@@ -225,7 +231,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   const SizedBox(height: 20),
 
                   // Faith Preference
-                  _buildFieldLabel('Faith Preference'),
+                  _buildFieldLabel(AppLocalizations.of(context)!.faithPreference),
                   _buildDropdown(
                     value: _faithPreference,
                     items: _faithPreferences,
@@ -234,7 +240,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   const SizedBox(height: 20),
 
                   // Language
-                  _buildFieldLabel('Language'),
+                  _buildFieldLabel(AppLocalizations.of(context)!.language),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
@@ -264,7 +270,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   const SizedBox(height: 20),
 
                   // Audio Guidance
-                  _buildFieldLabel('Audio Guidance'),
+                  _buildFieldLabel(AppLocalizations.of(context)!.audioGuidance),
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -299,7 +305,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       ),
                       Expanded(
                         child: Text(
-                          'I agree to the Terms and Conditions and Privacy Policy',
+                          AppLocalizations.of(context)!.agreeTerms,
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey.shade600,
@@ -335,7 +341,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                               ),
                             )
                           : Text(
-                              Provider.of<LocalizationProvider>(context).translate('continue'),
+
+                              AppLocalizations.of(context)!.continueText,
+
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
@@ -404,7 +412,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         value: value,
         isExpanded: true,
         underline: const SizedBox(),
-        hint: const Text('Select option'),
+        hint: Text(AppLocalizations.of(context)!.selectOption),
         items: items.map((item) {
           return DropdownMenuItem(
             value: item,
@@ -456,8 +464,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile setup complete!'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.profileSetupComplete),
             backgroundColor: Colors.green,
           ),
         );
@@ -472,7 +480,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.toString().replaceAll('Exception: ', '')),
+            content: Text(getAuthErrorMessage(context, e)),
             backgroundColor: Colors.red,
           ),
         );
@@ -493,3 +501,5 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     super.dispose();
   }
 }
+
+

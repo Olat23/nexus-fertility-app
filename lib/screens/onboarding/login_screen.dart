@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart';
 import '../../services/auth_service.dart';
+import '../../services/auth_error_helper.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -48,9 +50,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 24),
-                  const Text(
-                    'Welcome Back',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.welcomeBack,
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.deepPurple,
@@ -58,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Log in to your account',
+                    AppLocalizations.of(context)!.logInToAccount,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey.shade600,
@@ -68,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   // Email Field
                   Text(
-                    'Email Address',
+                    AppLocalizations.of(context)!.emailAddress,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -79,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
-                      hintText: 'you@example.com',
+                      hintText: AppLocalizations.of(context)!.emailHintLogin,
                       prefixIcon: const Icon(Icons.email_outlined),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -92,12 +94,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Email is required';
+                        return AppLocalizations.of(context)!.emailRequired;
                       }
                       if (!RegExp(
                               r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
                           .hasMatch(value)) {
-                        return 'Invalid email format';
+                        return AppLocalizations.of(context)!.invalidEmailFormat;
                       }
                       return null;
                     },
@@ -106,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   // Password Field
                   Text(
-                    'Password',
+                    AppLocalizations.of(context)!.passwordLabel,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -118,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _passwordController,
                     obscureText: !_showPassword,
                     decoration: InputDecoration(
-                      hintText: 'Enter password',
+                      hintText: AppLocalizations.of(context)!.enterPassword,
                       prefixIcon: const Icon(Icons.lock_outlined),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -142,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Password is required';
+                        return AppLocalizations.of(context)!.passwordRequired;
                       }
                       return null;
                     },
@@ -156,9 +158,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         // TODO: Implement forgot password
                       },
-                      child: const Text(
-                        'Forgot Password?',
-                        style: TextStyle(
+                      child: Text(
+                        AppLocalizations.of(context)!.forgotPassword,
+                        style: const TextStyle(
                           color: Colors.deepPurple,
                           fontWeight: FontWeight.w600,
                         ),
@@ -191,9 +193,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                             )
-                          : const Text(
-                              'Log In',
-                              style: TextStyle(
+                          : Text(
+                              AppLocalizations.of(context)!.logIn,
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
@@ -237,7 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.toString().replaceAll('Exception: ', '')),
+            content: Text(getAuthErrorMessage(context, e)),
             backgroundColor: Colors.red,
           ),
         );

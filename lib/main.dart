@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart';
 import 'services/auth_service.dart';
-import 'services/localization_provider.dart';
-import 'services/tts_service.dart';
+
+import 'services/localization_provider.dart' as loc_provider;
+
 import 'screens/onboarding/language_selection_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/audio/audio_hub_screen.dart';
@@ -25,8 +28,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<LocalizationProvider>(
-          create: (_) => LocalizationProvider(),
+        ChangeNotifierProvider<loc_provider.LocalizationProvider>(
+          create: (_) => loc_provider.LocalizationProvider(),
         ),
         ChangeNotifierProvider<AuthServiceImpl>(
           create: (_) => AuthServiceImpl(),
@@ -35,7 +38,7 @@ class MyApp extends StatelessWidget {
           create: (_) => TtsService(),
         ),
       ],
-      child: Consumer<LocalizationProvider>(
+      child: Consumer<loc_provider.LocalizationProvider>(
         builder: (context, localizationProvider, _) {
           return MaterialApp(
             title: 'Nexus Fertility',
@@ -60,8 +63,15 @@ class MyApp extends StatelessWidget {
               ),
             ),
             locale: localizationProvider.locale,
-            supportedLocales: LocalizationProvider.supportedLocales,
-            localizationsDelegates: LocalizationProvider.localizationsDelegates,
+
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+
             home: const LanguageSelectionScreen(),
             routes: {
               '/home': (context) => const HomeScreen(),
@@ -125,4 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+
+
 

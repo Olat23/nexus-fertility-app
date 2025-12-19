@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
@@ -18,10 +19,13 @@ class LocalizationProvider extends ChangeNotifier {
     GlobalWidgetsLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
   ];
+=======
+>>>>>>> main
 
   Locale _locale = const Locale('en');
   Locale get locale => _locale;
 
+<<<<<<< HEAD
   // Simple runtime translation map for quick wiring of new screens.
   static const Map<String, Map<String, String>> _localizedValues = {
     'en': {
@@ -135,6 +139,18 @@ class LocalizationProvider extends ChangeNotifier {
     if (supportedLocales.any((l) => l.languageCode == locale.languageCode)) {
       _locale = Locale(locale.languageCode);
       _saveToPrefs(_locale.languageCode);
+=======
+  static const supportedLocales = [
+    Locale('en'),
+    Locale('yo'), // Yoruba
+    Locale('ig'), // Igbo
+    Locale('ha'), // Hausa
+  ];
+
+  void setLocale(Locale locale) {
+    if (supportedLocales.contains(locale)) {
+      _locale = locale;
+>>>>>>> main
       notifyListeners();
     }
   }

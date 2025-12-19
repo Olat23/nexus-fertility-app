@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart';
 import 'email_signup_screen.dart';
 import 'phone_signup_screen.dart';
 
@@ -33,9 +34,9 @@ class AccountTypeSelectionScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  'Create Account',
-                  style: TextStyle(
+                Text(
+                  AppLocalizations.of(context)!.createAccount,
+                  style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                     color: Colors.deepPurple,
@@ -43,7 +44,7 @@ class AccountTypeSelectionScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Choose your preferred method',
+                  AppLocalizations.of(context)!.choosePreferredMethod,
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey.shade600,
@@ -54,8 +55,8 @@ class AccountTypeSelectionScreen extends StatelessWidget {
                 // Email Option
                 _AccountTypeCard(
                   icon: Icons.email_outlined,
-                  title: 'Email',
-                  subtitle: 'Create account with email',
+                  title: AppLocalizations.of(context)!.email,
+                  subtitle: AppLocalizations.of(context)!.createAccountWithEmail,
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -69,8 +70,8 @@ class AccountTypeSelectionScreen extends StatelessWidget {
                 // Phone Option
                 _AccountTypeCard(
                   icon: Icons.phone_outlined,
-                  title: 'Phone Number',
-                  subtitle: 'Create account with phone',
+                  title: AppLocalizations.of(context)!.phoneNumber,
+                  subtitle: AppLocalizations.of(context)!.createAccountWithPhone,
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -95,6 +96,9 @@ class _AccountTypeCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const _AccountTypeCard({
+
+    super.key,
+
     required this.icon,
     required this.title,
     required this.subtitle,

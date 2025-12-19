@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart';
 import '../../services/auth_service.dart';
+import '../../services/auth_error_helper.dart';
 import 'profile_setup_screen.dart';
 import 'dart:async';
 
@@ -76,9 +78,9 @@ class _EmailOTPVerificationScreenState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 24),
-                const Text(
-                  'Verify Email',
-                  style: TextStyle(
+                Text(
+                  AppLocalizations.of(context)!.verifyEmailTitle,
+                  style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: Colors.deepPurple,
@@ -86,7 +88,7 @@ class _EmailOTPVerificationScreenState
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Enter the code we sent to ${widget.email}',
+                  AppLocalizations.of(context)!.codeSentToEmail(widget.email),
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey.shade600,
@@ -149,7 +151,9 @@ class _EmailOTPVerificationScreenState
                 // Timer
                 Center(
                   child: Text(
-                    'Code expires in ${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+                    AppLocalizations.of(context)!.codeExpiresIn(
+                      '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}'
+                    ),
                     style: TextStyle(
                       fontSize: 14,
                       color: _secondsRemaining < 60
@@ -185,9 +189,9 @@ class _EmailOTPVerificationScreenState
                               ),
                             ),
                           )
-                        : const Text(
-                            'Verify',
-                            style: TextStyle(
+                        : Text(
+                            AppLocalizations.of(context)!.verify,
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
@@ -202,7 +206,7 @@ class _EmailOTPVerificationScreenState
                   child: TextButton(
                     onPressed: _secondsRemaining == 0 ? _handleResend : null,
                     child: Text(
-                      'Didn\'t receive code? Resend',
+                      AppLocalizations.of(context)!.didntReceiveCode,
                       style: TextStyle(
                         fontSize: 14,
                         color: _secondsRemaining == 0
@@ -227,8 +231,8 @@ class _EmailOTPVerificationScreenState
 
     if (otp.length != 6) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter all 6 digits'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.enterAll6Digits),
           backgroundColor: Colors.red,
         ),
       );
@@ -257,7 +261,7 @@ class _EmailOTPVerificationScreenState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.toString().replaceAll('Exception: ', '')),
+            content: Text(getAuthErrorMessage(context, e)),
             backgroundColor: Colors.red,
           ),
         );
