@@ -1,19 +1,19 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../services/localization_provider.dart';
+import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart';
+import '../../services/localization_provider.dart' as loc_provider;
 import 'welcome_screen.dart';
 
 class LanguageSelectionScreen extends StatelessWidget {
-  const LanguageSelectionScreen({Key? key}) : super(key: key);
+  const LanguageSelectionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final languages = [
-      {'code': 'en', 'flag': '🇬🇧', 'name': 'English'},
-      {'code': 'yo', 'flag': '🇳🇬', 'name': 'Yoruba'},
-      {'code': 'ig', 'flag': '🇳🇬', 'name': 'Igbo'},
-      {'code': 'ha', 'flag': '🇳🇬', 'name': 'Hausa'},
-      {'code': 'pcm', 'flag': '🇳🇬', 'name': 'Pidgin'},
+      {'code': 'en', 'name': 'English'},
+      {'code': 'yo', 'name': 'Yorùbá'},
+      {'code': 'ig', 'name': 'Igbo'},
+      {'code': 'ha', 'name': 'Hausa'},
     ];
 
     return Scaffold(
@@ -37,15 +37,15 @@ class LanguageSelectionScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Column(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.language,
                       size: 64,
                       color: Colors.deepPurple,
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'Select Language',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.selectLanguage,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.deepPurple,
@@ -53,7 +53,7 @@ class LanguageSelectionScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Choose your preferred language',
+                      AppLocalizations.of(context)!.choosePreferredLanguage,
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey.shade600,
@@ -64,35 +64,39 @@ class LanguageSelectionScreen extends StatelessWidget {
               ),
               const SizedBox(height: 48),
 
-              // Language Selection Grid
+              // Language Selection Grid (responsive, no flags)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 1,
+                child: SizedBox(
+                  // take remaining space and allow scrolling if needed
+                  height: MediaQuery.of(context).size.height * 0.45,
+                  child: GridView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12,
+                      childAspectRatio: 3,
+                    ),
+                    itemCount: languages.length,
+                    itemBuilder: (context, index) {
+                      final language = languages[index];
+                      return LanguageCard(
+                        name: language['name']!,
+                        code: language['code']!,
+                        onTap: () {
+                            context
+                              .read<loc_provider.LocalizationProvider>()
+                              .setLocaleByLanguageCode(language['code']!);
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => const WelcomeScreen(),
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
-                  itemCount: languages.length,
-                  itemBuilder: (context, index) {
-                    final language = languages[index];
-                    return LanguageCard(
-                      flag: language['flag']!,
-                      name: language['name']!,
-                      code: language['code']!,
-                      onTap: () {
-                        context.read<LocalizationProvider>()
-                            .setLocaleByLanguageCode(language['code']!);
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => const WelcomeScreen(),
-                          ),
-                        );
-                      },
-                    );
-                  },
                 ),
               ),
               const SizedBox(height: 48),
@@ -105,18 +109,16 @@ class LanguageSelectionScreen extends StatelessWidget {
 }
 
 class LanguageCard extends StatelessWidget {
-  final String flag;
   final String name;
   final String code;
   final VoidCallback onTap;
 
   const LanguageCard({
-    Key? key,
-    required this.flag,
+    super.key,
     required this.name,
     required this.code,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -140,11 +142,7 @@ class LanguageCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                flag,
-                style: const TextStyle(fontSize: 48),
-              ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 4),
               Text(
                 name,
                 style: const TextStyle(

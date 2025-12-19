@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart';
 import 'account_type_selection_screen.dart';
+import 'login_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({Key? key}) : super(key: key);
+  const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +53,9 @@ class WelcomeScreen extends StatelessWidget {
                     const SizedBox(height: 32),
 
                     // Welcome Text
-                    const Text(
-                      'Welcome to your journey',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.welcomeToJourney,
+                      style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
@@ -63,12 +65,12 @@ class WelcomeScreen extends StatelessWidget {
                   ],
                 ),
 
-                // Bottom Buttons
+                // Bottom Buttons (shorter, responsive)
                 Column(
                   children: [
                     SizedBox(
                       width: double.infinity,
-                      height: 56,
+                      height: 48,
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(
@@ -94,13 +96,17 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     SizedBox(
                       width: double.infinity,
-                      height: 56,
+                      height: 48,
                       child: OutlinedButton(
                         onPressed: () {
-                          // Navigate to login
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const LoginScreen(),
+                            ),
+                          );
                         },
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(color: Colors.grey.shade400),

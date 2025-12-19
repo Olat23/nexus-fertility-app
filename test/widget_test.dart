@@ -12,8 +12,8 @@ import 'package:nexus_fertility_app/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    // Build the counter page directly and trigger a frame.
+    await tester.pumpWidget(const MaterialApp(home: MyHomePage(title: 'Test')));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../services/auth_service.dart';
+import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -38,18 +37,18 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: const Icon(Icons.home),
+            label: AppLocalizations.of(context)!.home,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Calendar',
+            icon: const Icon(Icons.calendar_today),
+            label: AppLocalizations.of(context)!.calendar,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'Learn',
+            icon: const Icon(Icons.school),
+            label: AppLocalizations.of(context)!.learn,
           ),
         ],
       ),
@@ -72,18 +71,18 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Today\'s Fertility Insight',
-                  style: TextStyle(
+                Text(
+                  AppLocalizations.of(context)!.todaysFertilityInsight,
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                  'Your next fertility window is from Dec 23',
-                  style: TextStyle(
+                Text(
+                  AppLocalizations.of(context)!.nextFertilityWindow,
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black87,
                     fontWeight: FontWeight.w500,
@@ -91,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'By tracking your fertility you gain a better understanding of your cycle.',
+                  AppLocalizations.of(context)!.trackingBenefits,
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey.shade600,
@@ -100,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'You\'re doing great! Stay positive and be focused!',
+                  AppLocalizations.of(context)!.stayPositive,
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey.shade700,
@@ -117,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Expanded(
                 child: _buildQuickActionCard(
-                  'Calendar',
+                  AppLocalizations.of(context)!.calendar,
                   Icons.calendar_today,
                   () => setState(() => _selectedIndex = 1),
                 ),
@@ -125,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: _buildQuickActionCard(
-                  'Learn Hub',
+                  AppLocalizations.of(context)!.learnHub,
                   Icons.school,
                   () => setState(() => _selectedIndex = 2),
                 ),
@@ -135,20 +134,20 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 24),
 
           // Log Symptoms Section
-          const Text(
-            'Log Symptoms',
-            style: TextStyle(
+          Text(
+            AppLocalizations.of(context)!.logSymptoms,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
           ),
           const SizedBox(height: 16),
-          _buildSymptomCard('Bleeding', Icons.favorite),
-          _buildSymptomCard('Mood', Icons.mood),
-          _buildSymptomCard('Cervical Mucus', Icons.water_drop),
-          _buildSymptomCard('Pain', Icons.sentiment_very_dissatisfied),
-          _buildSymptomCard('Notes', Icons.edit_note),
+          _buildSymptomCard(AppLocalizations.of(context)!.bleeding, Icons.favorite),
+          _buildSymptomCard(AppLocalizations.of(context)!.mood, Icons.mood),
+          _buildSymptomCard(AppLocalizations.of(context)!.cervicalMucus, Icons.water_drop),
+          _buildSymptomCard(AppLocalizations.of(context)!.pain, Icons.sentiment_very_dissatisfied),
+          _buildSymptomCard(AppLocalizations.of(context)!.notes, Icons.edit_note),
         ],
       ),
     );
@@ -171,11 +170,11 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildCalendarGrid(),
           const SizedBox(height: 24),
           
-          const Align(
+          Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'Logged Symptoms',
-              style: TextStyle(
+              AppLocalizations.of(context)!.loggedSymptoms,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
@@ -183,11 +182,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          _buildLoggedSymptomItem('Bleeding', 7),
-          _buildLoggedSymptomItem('Mood', 14),
-          _buildLoggedSymptomItem('Cervical Mucus', 21),
-          _buildLoggedSymptomItem('Pain', 28),
-          _buildLoggedSymptomItem('Notes', 30),
+          _buildLoggedSymptomItem(AppLocalizations.of(context)!.bleeding, 7),
+          _buildLoggedSymptomItem(AppLocalizations.of(context)!.mood, 14),
+          _buildLoggedSymptomItem(AppLocalizations.of(context)!.cervicalMucus, 21),
+          _buildLoggedSymptomItem(AppLocalizations.of(context)!.pain, 28),
+          _buildLoggedSymptomItem(AppLocalizations.of(context)!.notes, 30),
         ],
       ),
     );
@@ -290,9 +289,9 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Icon(Icons.school, size: 64, color: Colors.grey.shade400),
           const SizedBox(height: 16),
-          const Text(
-            'Learn Hub',
-            style: TextStyle(
+          Text(
+            AppLocalizations.of(context)!.learnHub,
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.black,
@@ -300,7 +299,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Educational content coming soon',
+            AppLocalizations.of(context)!.educationalContentComingSoon,
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey.shade600,

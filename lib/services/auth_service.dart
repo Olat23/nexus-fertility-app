@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 import '../models/user.dart';
+import 'auth_exception.dart';
 
 abstract class AuthService {
   Future<User?> signUpWithEmail({
@@ -56,13 +59,49 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
 
   User? get currentUser => _currentUser;
 
-  AuthServiceImpl() {
+  AuthServiceImpl({String backendBaseUrl = ''}) : _backendBaseUrl = backendBaseUrl {
     _initialize();
   }
 
   Future<void> _initialize() async {
-    _prefs = await SharedPreferences.getInstance();
-    _loadUserFromPrefs();
+    try {
+      _prefs = await SharedPreferences.getInstance();
+      _loadUserFromPrefs();
+    } catch (e) {
+      debugPrint('SharedPreferences init error: $e');
+    }
+  }
+
+  Future<void> _ensurePrefs() async {
+    if (_prefs != null) return;
+    try {
+      _prefs = await SharedPreferences.getInstance();
+    } catch (e) {
+      debugPrint('SharedPreferences ensure error: $e');
+      // Fall back to in-memory prefs when SharedPreferences is unavailable
+      _prefs = null;
+    }
+  }
+
+  String? _getString(String key) {
+    if (_prefs != null) return _prefs!.getString(key);
+    return _inMemoryPrefs[key];
+  }
+
+  Future<void> _setString(String key, String value) async {
+    if (_prefs != null) {
+      await _prefs!.setString(key, value);
+      return;
+    }
+    _inMemoryPrefs[key] = value;
+  }
+
+  Future<void> _removeString(String key) async {
+    if (_prefs != null) {
+      await _prefs!.remove(key);
+      return;
+    }
+    _inMemoryPrefs.remove(key);
   }
 
   void _loadUserFromPrefs() {
@@ -79,15 +118,20 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
   }
 
   Future<void> _saveUserToPrefs(User user) async {
-    await _prefs.setString('user', _jsonEncode(user.toJson()));
+    await _ensurePrefs();
+    await _setString('user', _jsonEncode(user.toJson()));
     _currentUser = user;
     _authStateController.add(user);
     notifyListeners();
   }
 
   String _jsonEncode(Map<String, dynamic> data) {
-    // Simple JSON encoding - in production use json package
-    return data.toString();
+    return jsonEncode(data);
+  }
+
+  String _backendEndpoint(String path) {
+    final base = _backendBaseUrl.replaceAll(RegExp(r'/+$'), '');
+    return '$base$path';
   }
 
   @override
@@ -96,23 +140,39 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
     required String password,
   }) async {
     try {
-      // Validate email format
       if (!_isValidEmail(email)) {
-        throw Exception('Invalid email format');
+        throw AuthException(AuthErrorCodes.invalidEmail);
+      }
+      if (_backendBaseUrl.isNotEmpty) {
+        final uri = Uri.parse(_backendEndpoint('/api/register'));
+        final res = await http.post(uri,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'email': email,
+              'password': password,
+            }));
+        if (res.statusCode == 200 || res.statusCode == 201) {
+          final data = jsonDecode(res.body) as Map<String, dynamic>;
+          final user = User.fromJson(data);
+          await _saveUserToPrefs(user);
+          return user;
+        } else {
+          throw AuthException(AuthErrorCodes.serverError,
+              message: 'Register failed: ${res.body}');
+        }
       }
 
-      // Validate password strength
+      // Fallback/local behaviour
       if (password.length < 8) {
-        throw Exception('Password must be at least 8 characters');
+        throw AuthException(AuthErrorCodes.passwordTooShort);
       }
 
       // Check if user already exists
       final existingUser = _prefs.getString('user_$email');
       if (existingUser != null) {
-        throw Exception('Email already registered');
+        throw AuthException(AuthErrorCodes.emailAlreadyRegistered);
       }
 
-      // Create user object
       final user = User(
         email: email,
         emailVerified: false,
@@ -125,7 +185,6 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
 
       // In production, send OTP via email
       debugPrint('Sending OTP to $email');
-
       return user;
     } catch (e) {
       debugPrint('Sign up error: $e');
@@ -138,20 +197,18 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
     required String phoneNumber,
   }) async {
     try {
-      // Validate phone format
       if (!_isValidPhoneNumber(phoneNumber)) {
-        throw Exception('Invalid phone number format');
+        throw AuthException(AuthErrorCodes.invalidPhone);
       }
 
       // Check if phone already registered
       final existingUser = _prefs.getString('user_$phoneNumber');
       if (existingUser != null) {
-        throw Exception('Phone number already registered');
+        throw AuthException(AuthErrorCodes.phoneAlreadyRegistered);
       }
 
-      // Create user object
       final user = User(
-        email: '', // Will be set later
+        email: '',
         phoneNumber: phoneNumber,
         phoneVerified: false,
         createdAt: DateTime.now(),
@@ -162,7 +219,6 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
 
       // In production, send OTP via SMS
       debugPrint('Sending OTP to $phoneNumber');
-
       return user;
     } catch (e) {
       debugPrint('Sign up error: $e');
@@ -178,16 +234,17 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
     try {
       // In production, verify OTP with backend
       if (otp.length != 6) {
-        throw Exception('Invalid OTP format');
+        throw AuthException(AuthErrorCodes.invalidOtpFormat);
       }
 
       // Simulate OTP verification (in production, call backend)
       debugPrint('Verifying OTP: $otp for email: $email');
 
       // Get temporary user
-      final tempUserJson = _prefs.getString('temp_user_$email');
+      await _ensurePrefs();
+      final tempUserJson = _getString('temp_user_$email');
       if (tempUserJson == null) {
-        throw Exception('User not found');
+        throw AuthException(AuthErrorCodes.userNotFound);
       }
 
       // Update user with verified email
@@ -199,7 +256,7 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
 
       // Save verified user
       await _saveUserToPrefs(user);
-      await _prefs.remove('temp_user_$email');
+      await _removeString('temp_user_$email');
 
       return true;
     } catch (e) {
@@ -215,7 +272,22 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
   }) async {
     try {
       if (otp.length != 6) {
-        throw Exception('Invalid OTP format');
+        throw AuthException(AuthErrorCodes.invalidOtpFormat);
+      }
+      if (_backendBaseUrl.isNotEmpty) {
+        final uri = Uri.parse(_backendEndpoint('/api/verify-phone'));
+        final res = await http.post(uri,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'phone': phoneNumber, 'otp': otp}));
+        if (res.statusCode == 200) {
+          final data = jsonDecode(res.body) as Map<String, dynamic>;
+          final user = User.fromJson(data);
+          await _saveUserToPrefs(user);
+          return true;
+        } else {
+          throw AuthException(AuthErrorCodes.serverError,
+              message: 'OTP verify failed: ${res.body}');
+        }
       }
 
       debugPrint('Verifying OTP: $otp for phone: $phoneNumber');
@@ -223,10 +295,9 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
       // Get temporary user
       final tempUserJson = _prefs.getString('temp_user_$phoneNumber');
       if (tempUserJson == null) {
-        throw Exception('User not found');
+        throw AuthException(AuthErrorCodes.userNotFound);
       }
 
-      // Update user with verified phone
       final user = User(
         email: '',
         phoneNumber: phoneNumber,
@@ -235,7 +306,7 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
       );
 
       await _saveUserToPrefs(user);
-      await _prefs.remove('temp_user_$phoneNumber');
+      await _removeString('temp_user_$phoneNumber');
 
       return true;
     } catch (e) {
@@ -248,7 +319,7 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
   Future<bool> resendEmailOTP({required String email}) async {
     try {
       if (!_isValidEmail(email)) {
-        throw Exception('Invalid email');
+        throw AuthException(AuthErrorCodes.invalidEmail);
       }
 
       debugPrint('Resending OTP to email: $email');
@@ -264,7 +335,7 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
   Future<bool> resendPhoneOTP({required String phoneNumber}) async {
     try {
       if (!_isValidPhoneNumber(phoneNumber)) {
-        throw Exception('Invalid phone number');
+        throw AuthException(AuthErrorCodes.invalidPhone);
       }
 
       debugPrint('Resending OTP to phone: $phoneNumber');
@@ -287,7 +358,28 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
   }) async {
     try {
       if (_currentUser == null) {
-        throw Exception('No user logged in');
+        throw AuthException(AuthErrorCodes.noUserLoggedIn);
+      }
+      if (_backendBaseUrl.isNotEmpty) {
+        final uri = Uri.parse(_backendEndpoint('/api/users/$userId'));
+        final res = await http.put(uri,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'firstName': firstName,
+              'lastName': lastName,
+              'dateOfBirth': dateOfBirth?.toIso8601String(),
+              'gender': gender,
+              'profileImageUrl': profileImagePath,
+            }));
+        if (res.statusCode == 200) {
+          final data = jsonDecode(res.body) as Map<String, dynamic>;
+          final updated = User.fromJson(data);
+          await _saveUserToPrefs(updated);
+          return updated;
+        } else {
+          throw AuthException(AuthErrorCodes.serverError,
+              message: 'Update failed: ${res.body}');
+        }
       }
 
       final updatedUser = _currentUser!.copyWith(
@@ -300,7 +392,6 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
       );
 
       await _saveUserToPrefs(updatedUser);
-
       return updatedUser;
     } catch (e) {
       debugPrint('Update profile error: $e');
@@ -317,7 +408,7 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
       // In production, call backend authentication
       final userJson = _prefs.getString('user_$email');
       if (userJson == null) {
-        throw Exception('User not found');
+        throw AuthException(AuthErrorCodes.userNotFound);
       }
 
       // Load and return user
@@ -333,7 +424,8 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
   Future<void> signOut() async {
     try {
       _currentUser = null;
-      await _prefs.remove('user');
+      await _ensurePrefs();
+      await _removeString('user');
       _authStateController.add(null);
       notifyListeners();
     } catch (e) {
@@ -359,8 +451,8 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
   }
 
   bool _isValidPhoneNumber(String phone) {
-    final phoneRegex = RegExp(r'^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$');
-    return phoneRegex.hasMatch(phone.replaceAll(' ', ''));
+    final digitsOnly = phone.replaceAll(RegExp(r'\D'), '');
+    return digitsOnly.length >= 7 && digitsOnly.length <= 15;
   }
 
   @override

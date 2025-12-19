@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart';
 import '../../services/auth_service.dart';
+
+import '../../services/auth_error_helper.dart';
 
 class ProfileSetupScreen extends StatefulWidget {
   const ProfileSetupScreen({super.key});
@@ -15,10 +18,12 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   int _age = 27;
   int _cycleLength = 28;
   DateTime? _lastPeriodDate;
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   String? _ttcHistory;
   String? _faithPreference;
   String _language = 'English';
-  bool _audioGuidance = false;
+  final bool _audioGuidance = false;
   bool _isLoading = false;
   bool _acceptTerms = false;
 
@@ -40,29 +45,29 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     'None'
   ];
 
+
   final List<String> _languages = [
     'English',
     'Yoruba',
     'Igbo',
     'Hausa',
-    'Pidgin',
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.primaryLight,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.primary,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: const Text(
-          'Your Profile',
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context)!.profile,
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Colors.black,
@@ -109,6 +114,22 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               ),
               const SizedBox(height: 32),
 
+                  // First / Last name
+                  _buildFieldLabel('First name'),
+                  TextFormField(
+                    controller: _firstNameController,
+                    decoration: const InputDecoration(hintText: 'First name'),
+                    validator: (v) => (v == null || v.isEmpty) ? 'Enter your first name' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildFieldLabel('Last name'),
+                  TextFormField(
+                    controller: _lastNameController,
+                    decoration: const InputDecoration(hintText: 'Last name'),
+                    validator: (v) => (v == null || v.isEmpty) ? 'Enter your last name' : null,
+                  ),
+                  const SizedBox(height: 24),
+
                   // Age
                   _buildFieldLabel('Age'),
                   _buildNumberDropdown(
@@ -121,27 +142,24 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   // Cycle Length
                   _buildFieldLabel('Cycle Length'),
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey.shade300),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            '$_cycleLength',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ),
-                        Text(
-                          'days',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                      ],
+                    child: DropdownButton<int>(
+                      value: _cycleLength,
+                      isExpanded: true,
+                      underline: const SizedBox(),
+                      items: List.generate(30, (i) => i + 1).map((days) {
+                        return DropdownMenuItem(
+                          value: days,
+                          child: Text('$days Days'),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() => _cycleLength = value ?? 28);
+                      },
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -225,20 +243,25 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       border: Border.all(color: Colors.grey.shade300),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: DropdownButton<String>(
-                      value: _language,
-                      isExpanded: true,
-                      underline: const SizedBox(),
-                      items: _languages.map((lang) {
-                        return DropdownMenuItem(
-                          value: lang,
-                          child: Text(lang),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() => _language = value ?? 'English');
-                      },
-                    ),
+                    child: Builder(builder: (ctx) {
+                      final provider = Provider.of<LocalizationProvider>(context, listen: false);
+                      return DropdownButton<String>(
+                        value: _language,
+                        isExpanded: true,
+                        underline: const SizedBox(),
+                        items: _languages.map((lang) {
+                          return DropdownMenuItem(
+                            value: lang['label'],
+                            child: Text(lang['label']!),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() => _language = value ?? 'English');
+                          final selected = _languages.firstWhere((l) => l['label'] == value, orElse: () => {'code': 'en'});
+                          provider.setLocaleByLanguageCode(selected['code']!);
+                        },
+                      );
+                    }),
                   ),
                   const SizedBox(height: 20),
 
@@ -253,12 +276,17 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const SizedBox.shrink(),
-                        Switch(
-                          value: _audioGuidance,
-                          onChanged: (value) =>
-                              setState(() => _audioGuidance = value),
-                          activeThumbColor: Colors.blue,
+                        const Text('Amaka', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 4),
+                        const Text('amaka.john@email.com', style: TextStyle(color: Colors.grey)),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          width: 140,
+                          child: ElevatedButton(
+                            onPressed: () => Navigator.of(context).pushNamed('/settings_profile_setup'),
+                            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryLight, foregroundColor: Colors.black),
+                            child: const Text('Edit Profile'),
+                          ),
                         ),
                       ],
                     ),
@@ -287,12 +315,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 32),
-
-                  // Continue Button
+                  const SizedBox(height: 12),
                   SizedBox(
                     width: double.infinity,
-                    height: 56,
                     child: ElevatedButton(
                       onPressed: (_isLoading || !_acceptTerms) ? null : _handleContinue,
                       style: ElevatedButton.styleFrom(
@@ -313,9 +338,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                                 ),
                               ),
                             )
-                          : const Text(
-                              'Continue',
-                              style: TextStyle(
+                          : Text(
+                              AppLocalizations.of(context)!.continueText,
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
@@ -383,7 +408,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         value: value,
         isExpanded: true,
         underline: const SizedBox(),
-        hint: const Text('Select option'),
+        hint: Text(AppLocalizations.of(context)!.selectOption),
         items: items.map((item) {
           return DropdownMenuItem(
             value: item,
@@ -429,14 +454,14 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
       await authService.updateUserProfile(
         userId: currentUser.id ?? '',
-        firstName: currentUser.firstName,
-        lastName: currentUser.lastName,
+        firstName: _firstNameController.text.trim(),
+        lastName: _lastNameController.text.trim(),
       );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile setup complete!'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.profileSetupComplete),
             backgroundColor: Colors.green,
           ),
         );
@@ -451,7 +476,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.toString().replaceAll('Exception: ', '')),
+            content: Text(getAuthErrorMessage(context, e)),
             backgroundColor: Colors.red,
           ),
         );
@@ -467,6 +492,10 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
   @override
   void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     super.dispose();
   }
 }
+
+
