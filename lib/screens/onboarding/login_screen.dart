@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'phone_signup_screen.dart';
+import 'forget_password_flow.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -74,7 +75,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Forget Password
                   GestureDetector(
                     onTap: () {
-                      // TODO: Hook up forgot password flow
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => const ForgotPasswordScreen(),
+                        ),
+                      );
                     },
                     child: const Text(
                       'Forget Password.',

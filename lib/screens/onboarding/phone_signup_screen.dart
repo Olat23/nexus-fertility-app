@@ -61,38 +61,38 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(20),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(
                           Icons.check_circle_outline,
-                          size: 80,
+                          size: 72,
                           color: Color(0xFF2E683D),
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 20),
                         const Text(
                           'Verify Your Account',
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 22,
                             fontWeight: FontWeight.w600,
                             fontFamily: 'Poppins',
                             color: Colors.black,
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 12),
                         const Text(
                           'A verification code has been sent to your phone number. Please enter it to continue.',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 12,
                             fontWeight: FontWeight.w400,
                             fontFamily: 'Poppins',
                             color: Colors.black54,
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 20),
                         // OTP Input Fields
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -106,7 +106,7 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
                             _buildOTPField(otp4Controller),
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 12),
                         // Resend and Timer
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -123,7 +123,7 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
                               child: Text(
                                 'Resend',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                   fontFamily: 'Poppins',
                                   color: secondsRemaining == 0
@@ -136,7 +136,7 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
                             Text(
                               _formatTime(secondsRemaining),
                               style: const TextStyle(
-                                fontSize: 14,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w400,
                                 fontFamily: 'Poppins',
                                 color: Color(0xFF2E683D),
@@ -144,7 +144,7 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 20),
                         SizedBox(
                           width: 315,
                           height: 56,
@@ -169,14 +169,15 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
                             child: const Text(
                               'Verify',
                               style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
                                 fontFamily: 'Poppins',
                                 color: Colors.white,
                               ),
                             ),
                           ),
                         ),
+                        const SizedBox(height: 10),
                       ],
                     ),
                   ),

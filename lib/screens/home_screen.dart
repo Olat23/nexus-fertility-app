@@ -16,36 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true,
-        title: const Icon(Icons.menu, color: Colors.black),
-        actions: [
-          PopupMenuButton<String>(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: Row(
-                children: const [
-                  Text('Menu', style: TextStyle(color: Colors.black)),
-                  SizedBox(width: 6),
-                  Icon(Icons.more_vert, color: Colors.black),
-                ],
-              ),
-            ),
-            onSelected: (value) {
-              if (value == 'profile') Navigator.of(context).pushNamed('/profile');
-              if (value == 'settings') Navigator.of(context).pushNamed('/settings');
-              if (value == 'sex_timing') Navigator.of(context).pushNamed('/sex_timing');
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(value: 'profile', child: Text('Profile')),
-              const PopupMenuItem(value: 'settings', child: Text('Settings')),
-              const PopupMenuItem(value: 'sex_timing', child: Text('Sex Timing Preferences')),
-            ],
-          ),
-        ],
-      ),
+      appBar: null,
       body: IndexedStack(
         index: _selectedIndex,
         children: [
@@ -76,105 +47,120 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHomeTab() {
+    final size = MediaQuery.of(context).size;
+    final heroHeight = size.height * 0.5;
+    const buttonHeight = 64.0;
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Today's Fertility Insight
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          SizedBox(
+            height: heroHeight + (buttonHeight / 2),
+            child: Stack(
+              clipBehavior: Clip.none,
               children: [
-                Text(
-                  AppLocalizations.of(context)!.todaysFertilityInsight,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                Container(
+                  height: heroHeight,
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF2E683D),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          top: 30,
+                          left: 30,
+                          child: Icon(
+                            Icons.menu,
+                            color: Color(0xFFA8D497),
+                            size: 28,
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 50),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: const [
+                                Text(
+                                  "Today's fertility insight",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: 'Poppins',
+                                    color: Color(0xFFA8D497),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Your next fertility window is from\nDec 23-27',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'Poppins',
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  AppLocalizations.of(context)!.nextFertilityWindow,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  AppLocalizations.of(context)!.trackingBenefits,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade600,
-                    height: 1.5,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  AppLocalizations.of(context)!.stayPositive,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade700,
-                    fontStyle: FontStyle.italic,
+                Positioned(
+                  top: heroHeight - (buttonHeight / 2),
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: SizedBox(
+                      width: 280,
+                      height: buttonHeight,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFA8D497),
+                          foregroundColor: const Color(0xFF2E683D),
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(Icons.water_drop, color: Color(0xFF2E683D)),
+                            SizedBox(width: 12),
+                            Text(
+                              'Log symptoms',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'Poppins',
+                                color: Color(0xFF2E683D),
+                              ),
+                            ),
+                            SizedBox(width: 12),
+                            Icon(Icons.arrow_right, color: Color(0xFF2E683D)),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 24),
-
-          // Quick Actions (navigate to specific screens)
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-
-              Expanded(
-                child: _buildQuickActionCard(
-                  AppLocalizations.of(context)!.calendar,
-                  Icons.calendar_today,
-                  () => setState(() => _selectedIndex = 1),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildQuickActionCard(
-                  AppLocalizations.of(context)!.learnHub,
-                  Icons.school,
-                  () => setState(() => _selectedIndex = 2),
-                ),
-              ),
-
-            ],
-          ),
-          const SizedBox(height: 24),
-
-          // Log Symptoms Section
-          Text(
-            AppLocalizations.of(context)!.logSymptoms,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-          const SizedBox(height: 16),
-          _buildSymptomCard(AppLocalizations.of(context)!.bleeding, Icons.favorite),
-          _buildSymptomCard(AppLocalizations.of(context)!.mood, Icons.mood),
-          _buildSymptomCard(AppLocalizations.of(context)!.cervicalMucus, Icons.water_drop),
-          _buildSymptomCard(AppLocalizations.of(context)!.pain, Icons.sentiment_very_dissatisfied),
-          _buildSymptomCard(AppLocalizations.of(context)!.notes, Icons.edit_note),
+          const SizedBox(height: 40),
         ],
       ),
     );
