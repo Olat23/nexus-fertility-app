@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart';
-import '../../services/auth_service.dart';import '../../services/auth_error_helper.dart';import 'phone_otp_verification_screen.dart';
+import 'dart:ui';
+import 'onboarding_screens.dart';
 
 class PhoneSignupScreen extends StatefulWidget {
   const PhoneSignupScreen({super.key});
@@ -12,240 +10,243 @@ class PhoneSignupScreen extends StatefulWidget {
 }
 
 class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
+  final _fullNameController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  bool _isLoading = false;
-  String _selectedCountryCode = '+234'; // Default to Nigeria
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _phoneController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
 
-  final Map<String, int> _countryCodeLengths = {
-    '+1': 10,     // USA
-    '+44': 10,    // UK
-    '+91': 10,    // India
-    '+234': 10,   // Nigeria
-    '+55': 11,    // Brazil
-    '+34': 9,     // Spain
-    '+33': 9,     // France
-    '+49': 11,    // Germany
-    '+39': 10,    // Italy
-  };
-
-  final List<String> _countryCodes = [
-    '+1',  // USA
-    '+44', // UK
-    '+91', // India
-    '+234', // Nigeria
-    '+55', // Brazil
-    '+34', // Spain
-    '+33', // France
-    '+49', // Germany
-    '+39', // Italy
-  ];
+  void _showVerifyModal() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Dialog(
+            backgroundColor: Colors.transparent,
+            child: Container(
+              width: 363,
+              height: 430,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.check_circle_outline,
+                      size: 80,
+                      color: Color(0xFF2E683D),
+                    ),
+                    const SizedBox(height: 24),
+                    const Text(
+                      'Verify Your Account',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Poppins',
+                        color: Colors.black,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'A verification code has been sent to your phone number. Please enter it to continue.',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: 'Poppins',
+                        color: Colors.black54,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 32),
+                    SizedBox(
+                      width: 315,
+                      height: 56,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          // Navigate to login screen (you'll need to create this)
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (_) => const OnboardingScreens(), // Replace with actual login screen
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF2E683D),
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                        child: const Text(
+                          'Verify',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Poppins',
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.deepPurple),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.deepPurple.shade50,
-              Colors.deepPurple.shade100,
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Form(
               key: _formKey,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 24),
-                  Text(
-                    AppLocalizations.of(context)!.phoneSignupTitle,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    AppLocalizations.of(context)!.phoneSignupSubtitle,
+                  const SizedBox(height: 30),
+                  
+                  // Register Title
+                  const Text(
+                    'Register',
                     style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade600,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Poppins',
+                      color: Color(0xFF2E683D),
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
+
+                  // Full Name Field
+                  _buildInputField(
+                    label: 'Full Name',
+                    controller: _fullNameController,
+                    keyboardType: TextInputType.name,
+                  ),
+                  const SizedBox(height: 5),
 
                   // Phone Number Field
-                  Text(
-                    AppLocalizations.of(context)!.phoneNumberLabel,
+                  _buildInputField(
+                    label: 'Phone Number',
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                  ),
+                  const SizedBox(height: 5),
+
+                  // Password Field
+                  _buildInputField(
+                    label: 'Password',
+                    controller: _passwordController,
+                    isPassword: true,
+                  ),
+                  const SizedBox(height: 5),
+
+                  // Confirm Password Field
+                  _buildInputField(
+                    label: 'Confirm Password',
+                    controller: _confirmPasswordController,
+                    isPassword: true,
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Sign up with text
+                  const Text(
+                    'Sign up with',
                     style: TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade800,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'Poppins',
+                      color: Colors.black54,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 8),
-                  Row(
+                  const SizedBox(height: 16),
+
+                  // Social Sign-in Circles
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Country Code Dropdown
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(12),
-                            bottomLeft: Radius.circular(12),
-                          ),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: DropdownButton<String>(
-                          value: _selectedCountryCode,
-                          items: _countryCodes.map((code) {
-                            return DropdownMenuItem(
-                              value: code,
-                              child: Text(code),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedCountryCode = value!;
-                            });
-                          },
-                          underline: const SizedBox(),
-                          isDense: true,
-                        ),
-                      ),
-                      // Phone Number Input
-                      Expanded(
-                        child: TextFormField(
-                          controller: _phoneController,
-                          decoration: InputDecoration(
-                            hintText: AppLocalizations.of(context)!.phoneNumberHint,
-                            fillColor: Colors.white,
-                            filled: true,
-                            border: OutlineInputBorder(
-                              borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(12),
-                                bottomRight: Radius.circular(12),
-                              ),
-                              borderSide: BorderSide(
-                                color: Colors.grey.shade300,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(12),
-                                bottomRight: Radius.circular(12),
-                              ),
-                              borderSide: BorderSide(
-                                color: Colors.grey.shade300,
-                              ),
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 16,
-                            ),
-                          ),
-                          keyboardType: TextInputType.number,
-                          maxLength: _countryCodeLengths[_selectedCountryCode] ?? 10,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return AppLocalizations.of(context)!.phoneRequired;
-                            }
-                            final expectedLength = _countryCodeLengths[_selectedCountryCode] ?? 10;
-                            if (value.length != expectedLength) {
-                              return AppLocalizations.of(context)!.invalidPhoneForCountry;
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
+                      _buildSocialCircle('G'),
+                      const SizedBox(height: 10),
+                      _buildSocialCircle('f'),
                     ],
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 40),
 
-                  // Info Box
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade50,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.blue.shade200),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.info_outline,
-                          color: Colors.blue.shade600,
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            AppLocalizations.of(context)!.otpInfoMessage,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.blue.shade700,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-
-                  // Continue Button
+                  // Submit Button
                   SizedBox(
-                    width: double.infinity,
-                    height: 56,
+                    width: 360,
+                    height: 60,
                     child: ElevatedButton(
-                      onPressed: _isLoading ? null : _handleContinue,
+                      onPressed: _showVerifyModal,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepPurple,
-                        disabledBackgroundColor: Colors.grey.shade300,
+                        backgroundColor: const Color(0xFF2E683D),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(5),
                         ),
                       ),
-                      child: _isLoading
-                          ? const SizedBox(
-                              height: 24,
-                              width: 24,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.white,
-                                ),
-                              ),
-                            )
-                          : Text(
-                              AppLocalizations.of(context)!.continueText,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
+                      child: const Text(
+                        'Submit',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Poppins',
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 48),
+                  const SizedBox(height: 10),
+
+                  // Cancel Button
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => const OnboardingScreens(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: 'Poppins',
+                        color: Color(0xFF2E683D),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 30),
                 ],
               ),
             ),
@@ -255,53 +256,79 @@ class _PhoneSignupScreenState extends State<PhoneSignupScreen> {
     );
   }
 
-  Future<void> _handleContinue() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final authService = Provider.of<AuthServiceImpl>(context, listen: false);
-      final fullPhoneNumber = '$_selectedCountryCode${_phoneController.text}';
-      
-      final user = await authService.signUpWithPhone(
-        phoneNumber: fullPhoneNumber,
-      );
-
-      if (mounted && user != null) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => PhoneOTPVerificationScreen(
-              phoneNumber: fullPhoneNumber,
+  Widget _buildInputField({
+    required String label,
+    required TextEditingController controller,
+    TextInputType keyboardType = TextInputType.text,
+    bool isPassword = false,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            fontFamily: 'Poppins',
+            color: Color(0xFF2E683D),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          width: 360,
+          height: 60,
+          decoration: BoxDecoration(
+            color: Colors.grey.shade200,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: TextFormField(
+            controller: controller,
+            keyboardType: keyboardType,
+            obscureText: isPassword,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 18,
+              ),
+              hintStyle: TextStyle(
+                color: Colors.grey.shade400,
+                fontFamily: 'Poppins',
+              ),
+            ),
+            style: const TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 14,
             ),
           ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(getAuthErrorMessage(context, e)),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
+        ),
+      ],
+    );
   }
 
-  @override
-  void dispose() {
-    _phoneController.dispose();
-    super.dispose();
+  Widget _buildSocialCircle(String text) {
+    return Container(
+      width: 50,
+      height: 47,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: Colors.grey.shade300,
+          width: 1,
+        ),
+      ),
+      child: Center(
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Poppins',
+            color: Color(0xFF2E683D),
+          ),
+        ),
+      ),
+    );
   }
 }

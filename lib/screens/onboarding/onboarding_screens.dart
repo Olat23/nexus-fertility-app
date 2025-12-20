@@ -119,21 +119,6 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
               ),
             ),
 
-            // Page Indicators
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildIndicator(0),
-                  const SizedBox(width: 3),
-                  _buildIndicator(1),
-                  const SizedBox(width: 3),
-                  _buildIndicator(2),
-                ],
-              ),
-            ),
-
             // Next Button
             Padding(
               padding: const EdgeInsets.only(bottom: 70),
@@ -211,12 +196,9 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
             Container(
               width: 128,
               height: 128,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: const Color(0xFF2E683D),
-                  width: 2,
-                ),
+                color: Color(0xFFA8D497),
               ),
               child: const Icon(
                 Icons.calendar_today,
@@ -250,6 +232,19 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
               ),
               textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 6),
+
+            // Page Indicators
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildIndicator(0),
+                const SizedBox(width: 3),
+                _buildIndicator(1),
+                const SizedBox(width: 3),
+                _buildIndicator(2),
+              ],
+            ),
           ],
         ),
       ),
@@ -267,12 +262,9 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
             Container(
               width: 128,
               height: 128,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: const Color(0xFF2E683D),
-                  width: 2,
-                ),
+                color: Color(0xFFA8D497),
               ),
               child: const Icon(
                 Icons.book_outlined,
@@ -304,6 +296,19 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
               ),
               textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 6),
+
+            // Page Indicators
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildIndicator(0),
+                const SizedBox(width: 3),
+                _buildIndicator(1),
+                const SizedBox(width: 3),
+                _buildIndicator(2),
+              ],
+            ),
           ],
         ),
       ),
@@ -321,12 +326,9 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
             Container(
               width: 128,
               height: 128,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: const Color(0xFF2E683D),
-                  width: 2,
-                ),
+                color: Color(0xFFA8D497),
               ),
               child: const Icon(
                 Icons.favorite_border,
@@ -357,6 +359,19 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                 color: Colors.black,
               ),
               textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 6),
+
+            // Page Indicators
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildIndicator(0),
+                const SizedBox(width: 3),
+                _buildIndicator(1),
+                const SizedBox(width: 3),
+                _buildIndicator(2),
+              ],
             ),
           ],
         ),
