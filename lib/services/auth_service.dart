@@ -49,10 +49,10 @@ abstract class AuthService {
     String? lastName,
     DateTime? dateOfBirth,
     String? gender,
-    String? profileImagePath,
+          if (FeatureFlags.firebaseAuthAvailable) {
     String? preferredLanguage,
   });
-
+          if (FeatureFlags.firebaseAuthAvailable) {
   Future<User?> signIn({
     required String email,
     required String password,
@@ -269,7 +269,7 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
       await _setString('registration_data_$phoneNumber', _jsonEncode(registrationData));
 
       // Send OTP via Firebase or backend based on feature flag
-      if (FeatureFlags.enableFirebaseAuth) {
+      if (FeatureFlags.firebaseAuthAvailable) {
         if (kIsWeb) {
           _webConfirmationResult = await _firebaseAuth.signInWithPhoneNumber(phoneNumber);
           debugPrint('OTP sent to $phoneNumber via Firebase (web)');
@@ -376,7 +376,7 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
   }) async {
     try {
       firebase_auth.UserCredential? userCredential;
-      if (FeatureFlags.enableFirebaseAuth) {
+          if (FeatureFlags.firebaseAuthAvailable) {
         if (kIsWeb) {
           if (_webConfirmationResult == null) {
             throw AuthException(AuthErrorCodes.invalidOtpFormat,
@@ -485,30 +485,38 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
         throw AuthException(AuthErrorCodes.invalidPhone);
       }
 
-      // Only use resend token on native platforms (not web)
-      if (kIsWeb) {
-        // On web, request OTP again using signInWithPhoneNumber
-        _webConfirmationResult = await _firebaseAuth.signInWithPhoneNumber(phoneNumber);
-        debugPrint('OTP resent to $phoneNumber (web)');
+      if (FeatureFlags.firebaseAuthAvailable) {
+        // Only use resend token on native platforms (not web)
+        if (kIsWeb) {
+          // On web, request OTP again using signInWithPhoneNumber
+          _webConfirmationResult = await _firebaseAuth.signInWithPhoneNumber(phoneNumber);
+          debugPrint('OTP resent to $phoneNumber (web)');
+        } else {
+          // On native platforms, use the resend token
+          await _firebaseAuth.verifyPhoneNumber(
+            phoneNumber: phoneNumber,
+            resendToken: _resendToken,
+            verificationCompleted: (firebase_auth.PhoneAuthCredential credential) {
+              debugPrint('Phone verification auto-completed on resend (native)');
+            },
+            verificationFailed: (firebase_auth.FirebaseAuthException e) {
+              debugPrint('Phone verification resend failed (native): ${e.message}');
+            },
+            codeSent: (String verificationId, int? resendToken) {
+              _verificationId = verificationId;
+              _resendToken = resendToken;
+              debugPrint('OTP resent to $phoneNumber (native)');
+            },
+            codeAutoRetrievalTimeout: (String verificationId) {
+              _verificationId = verificationId;
+            },
+          );
+        }
       } else {
-        // On native platforms, use the resend token
-        await _firebaseAuth.verifyPhoneNumber(
-          phoneNumber: phoneNumber,
-          resendToken: _resendToken,
-          verificationCompleted: (firebase_auth.PhoneAuthCredential credential) {
-            debugPrint('Phone verification auto-completed on resend (native)');
-          },
-          verificationFailed: (firebase_auth.FirebaseAuthException e) {
-            debugPrint('Phone verification resend failed (native): ${e.message}');
-          },
-          codeSent: (String verificationId, int? resendToken) {
-            _verificationId = verificationId;
-            _resendToken = resendToken;
-            debugPrint('OTP resent to $phoneNumber (native)');
-          },
-          codeAutoRetrievalTimeout: (String verificationId) {
-            _verificationId = verificationId;
-          },
+        // Backend resend path when Firebase is disabled or unconfigured
+        throw AuthException(
+          AuthErrorCodes.serverError,
+          details: 'Firebase auth disabled; backend resend not implemented for phone OTP.',
         );
       }
 
@@ -530,7 +538,7 @@ class AuthServiceImpl extends ChangeNotifier implements AuthService {
     String? preferredLanguage,
   }) async {
     try {
-      if (_currentUser == null) {
+            _webConfirmationResult = await _firebaseAuth.signInWithPhoneNumber(phoneNumber);
         throw AuthException(AuthErrorCodes.noUserLoggedIn);
       }
 

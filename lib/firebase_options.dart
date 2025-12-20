@@ -21,4 +21,11 @@ class DefaultFirebaseOptions {
     messagingSenderId: 'TODO_MESSAGING_SENDER_ID',
     measurementId: 'TODO_MEASUREMENT_ID',
   );
+
+  /// Detects if the web options are still placeholder values.
+  static bool get isPlaceholder {
+    return web.apiKey.startsWith('TODO_') ||
+        web.appId.startsWith('TODO_') ||
+        web.projectId.startsWith('TODO_');
+  }
 }

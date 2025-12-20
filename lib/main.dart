@@ -27,7 +27,7 @@ void main() async {
   
   // Initialize Firebase
   try {
-    if (FeatureFlags.enableFirebaseAuth) {
+    if (FeatureFlags.firebaseAuthAvailable) {
       if (kIsWeb) {
         await Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
@@ -39,6 +39,7 @@ void main() async {
     debugPrint('Firebase initialized successfully');
   } catch (e) {
     debugPrint('Firebase initialization error: $e');
+    debugPrint('Firebase auth disabled; using backend-only auth flows');
   }
   
   runApp(const MyApp());
