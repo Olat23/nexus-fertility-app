@@ -12,17 +12,72 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  bool _showSideMenu = false;
+
+  void _toggleSideMenu() {
+    setState(() {
+      _showSideMenu = !_showSideMenu;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: null,
-      body: IndexedStack(
-        index: _selectedIndex,
+      body: Stack(
         children: [
-          _buildHomeTab(),
-          _buildCalendarTab(),
-          _buildLearnHubTab(),
+          IndexedStack(
+            index: _selectedIndex,
+            children: [
+              _buildHomeTab(),
+              _buildCalendarTab(),
+              _buildLearnHubTab(),
+            ],
+          ),
+          // Side menu overlay
+          if (_showSideMenu)
+            GestureDetector(
+              onTap: _toggleSideMenu,
+              child: Container(
+                color: Colors.black.withOpacity(0.3),
+              ),
+            ),
+          // Side menu
+          if (_showSideMenu)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: GestureDetector(
+                onTap: () {}, // Prevent closing when tapping inside menu
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  height: MediaQuery.of(context).size.height,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFA8D497),
+                  ),
+                  child: SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15, top: 30),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          IconButton(
+                            icon: const Icon(
+                              Icons.close,
+                              color: Color(0xFF2E683D),
+                              size: 28,
+                            ),
+                            onPressed: _toggleSideMenu,
+                            padding: EdgeInsets.zero,
+                            alignment: Alignment.centerLeft,
+                          ),
+                          // Add menu items here
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -72,42 +127,67 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Stack(
                       children: [
+                        // Decorative semicolon background
+                        Positioned(
+                          bottom: 70,
+                          right: -100,
+                          child: Transform.rotate(
+                            angle: -0.3, // ~17 degrees tilt
+                            child: Opacity(
+                              opacity: 0.2,
+                              child: Text(
+                                ';',
+                                style: TextStyle(
+                                  fontSize: 350,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Poppins',
+                                  color: Colors.white,
+                                  height: 1,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                         Positioned(
                           top: 30,
-                          left: 30,
-                          child: Icon(
-                            Icons.menu,
-                            color: Color(0xFFA8D497),
-                            size: 28,
+                          left: 15,
+                          child: GestureDetector(
+                            onTap: _toggleSideMenu,
+                            child: const Icon(
+                              Icons.menu,
+                              color: Color(0xFFA8D497),
+                              size: 28,
+                            ),
                           ),
                         ),
                         Align(
-                          alignment: Alignment.bottomCenter,
+                          alignment: Alignment.bottomLeft,
                           child: Padding(
-                            padding: const EdgeInsets.only(bottom: 50),
+                            padding: const EdgeInsets.only(bottom: 70, left: 30),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: const [
                                 Text(
                                   "Today's fertility insight",
                                   style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.w600,
                                     fontFamily: 'Poppins',
                                     color: Color(0xFFA8D497),
                                   ),
-                                  textAlign: TextAlign.center,
+                                  textAlign: TextAlign.left,
                                 ),
                                 SizedBox(height: 8),
                                 Text(
                                   'Your next fertility window is from\nDec 23-27',
                                   style: TextStyle(
                                     fontSize: 18,
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w400,
                                     fontFamily: 'Poppins',
                                     color: Colors.white,
                                   ),
-                                  textAlign: TextAlign.center,
+                                  textAlign: TextAlign.left,
                                 ),
                               ],
                             ),
@@ -160,8 +240,94 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
+          const SizedBox(height: 20),
+          // Encouragement text
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24),
+            child: Text(
+              "You're doing great! Stay positive\nand be focused!",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'Poppins',
+                color: Color(0xFF2E683D),
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 15),
+          // Feature cards
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildFeatureCard(
+                  icon: Icons.calendar_today,
+                  label: 'Calendar',
+                  onTap: () {
+                    setState(() {
+                      _selectedIndex = 1; // Navigate to calendar tab
+                    });
+                  },
+                ),
+                const SizedBox(width: 12),
+                _buildFeatureCard(
+                  icon: Icons.child_care,
+                  label: 'Gender\nPredictions',
+                  onTap: () {},
+                ),
+              ],
+            ),
+          ),
           const SizedBox(height: 40),
         ],
+      ),
+    );
+  }
+
+  Widget _buildFeatureCard({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 141,
+        height: 120,
+        decoration: BoxDecoration(
+          color: const Color(0xFF2E683D),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.15),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: const Color(0xFFA8D497),
+              size: 40,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Poppins',
+                color: Color(0xFFA8D497),
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
