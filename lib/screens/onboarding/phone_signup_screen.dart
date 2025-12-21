@@ -402,21 +402,19 @@ class _VerifyModalContentState extends State<_VerifyModalContent> {
 
   @override
   Widget build(BuildContext context) {
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-      child: Dialog(
-        backgroundColor: Colors.transparent,
-        child: Container(
-          width: 363,
-          height: 430,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(20),
+    return Dialog(
+      backgroundColor: Colors.white,
+      elevation: 8,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 400),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: SingleChildScrollView(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 const Icon(
                   Icons.check_circle_outline,
@@ -446,16 +444,16 @@ class _VerifyModalContentState extends State<_VerifyModalContent> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-                // OTP Input Fields
+                // OTP Input Fields - 6 digits
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _buildOTPField(widget.otp1Controller),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 8),
                     _buildOTPField(widget.otp2Controller),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 8),
                     _buildOTPField(widget.otp3Controller),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 8),
                     _buildOTPField(widget.otp4Controller),
                   ],
                 ),
@@ -538,13 +536,20 @@ class _VerifyModalContentState extends State<_VerifyModalContent> {
                         } catch (e) {
                           if (mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Verification failed: $e')),
+                              SnackBar(
+                                content: Text('Verification failed: ${e.toString()}'),
+                                backgroundColor: Colors.red,
+                                duration: const Duration(seconds: 4),
+                              ),
                             );
                           }
                         }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Please enter complete OTP')),
+                          const SnackBar(
+                            content: Text('Please enter complete OTP'),
+                            backgroundColor: Colors.red,
+                          ),
                         );
                       }
                     },
@@ -572,8 +577,7 @@ class _VerifyModalContentState extends State<_VerifyModalContent> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildOTPField(TextEditingController controller) {
