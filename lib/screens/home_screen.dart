@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart';
 import '../services/auth_service.dart';
+import 'profile/profile_screen.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -72,7 +73,26 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: EdgeInsets.zero,
                             alignment: Alignment.centerLeft,
                           ),
-                          // Add menu items here
+                          const SizedBox(height: 12),
+                          GestureDetector(
+                            onTap: () {
+                              _toggleSideMenu();
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => const ProfileScreen(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              'Settings',
+                              style: TextStyle(
+                                color: Color(0xFF2E683D),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'Poppins',
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -344,41 +364,168 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildCalendarTab() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
+    final size = MediaQuery.of(context).size;
+    final greenHeight = size.height * 0.5;
+    
+    return Scaffold(
+      backgroundColor: const Color(0xFF2E683D),
+      body: Stack(
         children: [
-          const Text(
-            'December 2025',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-          const SizedBox(height: 20),
-          _buildCalendarGrid(),
-          const SizedBox(height: 24),
-          
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              AppLocalizations.of(context)!.loggedSymptoms,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+          // Top green area with calendar header
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15, right: 15, top: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Back arrow
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedIndex = 0; // Navigate to home
+                      });
+                    },
+                    child: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  // Month and year centered
+                  Center(
+                    child: const Text(
+                      'December 2025',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  // Day labels row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+                        .map((day) => Expanded(
+                              child: Center(
+                                child: Text(
+                                  day,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                    fontFamily: 'Poppins',
+                                  ),
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                  const SizedBox(height: 10),
+                  // Calendar grid
+                  _buildCalendarGridInGreen(),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: 16),
-          _buildLoggedSymptomItem(AppLocalizations.of(context)!.bleeding, 7),
-          _buildLoggedSymptomItem(AppLocalizations.of(context)!.mood, 14),
-          _buildLoggedSymptomItem(AppLocalizations.of(context)!.cervicalMucus, 21),
-          _buildLoggedSymptomItem(AppLocalizations.of(context)!.pain, 28),
-          _buildLoggedSymptomItem(AppLocalizations.of(context)!.notes, 30),
+          // White container from middle to bottom
+          Positioned(
+            top: greenHeight,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+              ),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        AppLocalizations.of(context)!.loggedSymptoms,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildLoggedSymptomItem(AppLocalizations.of(context)!.bleeding, 7),
+                    _buildLoggedSymptomItem(AppLocalizations.of(context)!.mood, 14),
+                    _buildLoggedSymptomItem(AppLocalizations.of(context)!.cervicalMucus, 21),
+                    _buildLoggedSymptomItem(AppLocalizations.of(context)!.pain, 28),
+                    _buildLoggedSymptomItem(AppLocalizations.of(context)!.notes, 30),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildCalendarGridInGreen() {
+    // December 2025 starts on Monday (day 1), so Sunday (0) is from previous month
+    final startDay = 1; // 0=Sunday, 1=Monday for Dec 1
+    final daysInMonth = 31;
+    final daysInPrevMonth = 30; // November has 30 days
+    
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 7,
+        childAspectRatio: 1,
+        crossAxisSpacing: 5,
+        mainAxisSpacing: 5,
+      ),
+      itemCount: 35,
+      itemBuilder: (context, index) {
+        if (index < startDay) {
+          // Previous month days
+          final prevDay = daysInPrevMonth - startDay + index + 1;
+          return Center(
+            child: Text(
+              '$prevDay',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey.shade400,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'Poppins',
+              ),
+            ),
+          );
+        } else if (index < startDay + daysInMonth) {
+          // Current month days
+          final day = index - startDay + 1;
+          return Center(
+            child: Text(
+              '$day',
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Poppins',
+              ),
+            ),
+          );
+        } else {
+          return const SizedBox();
+        }
+      },
     );
   }
 
@@ -483,9 +630,10 @@ class _HomeScreenState extends State<HomeScreen> {
           body: Column(
             children: [
               Container(
-                width: 363,
+                width: double.infinity,
                 height: 110,
-                margin: const EdgeInsets.only(top: 50, bottom: 16, left: 30),
+                margin: const EdgeInsets.only(top: 50, bottom: 16),
+                padding: const EdgeInsets.only(left: 30, right: 30),
                 decoration: const BoxDecoration(
                   color: Color(0xFF2E683D),
                 ),
@@ -523,7 +671,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 13),
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -736,7 +884,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 32,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    border: Border.all(color: const Color(0xFF2E683D)),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: const Icon(
