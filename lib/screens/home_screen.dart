@@ -4,6 +4,7 @@ import 'package:nexus_fertility_app/flutter_gen/gen_l10n/app_localizations.dart'
 import '../services/auth_service.dart';
 import 'profile/profile_screen.dart';
 import 'support/support_screen.dart';
+import 'tracking/log_symptom_screen.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -17,6 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   bool _showSideMenu = false;
   Set<int> _selectedCalendarDays = {};
+  String _currentAffirmation = "Every challenge is an opportunity to grow stronger and wiser.";
 
   void _toggleSideMenu() {
     setState(() {
@@ -106,17 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        onTap: (index) {
-          if (index == 3) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const SupportScreen(),
-              ),
-            );
-          } else {
-            setState(() => _selectedIndex = index);
-          }
-        },
+        onTap: (index) => setState(() => _selectedIndex = index),
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
         selectedItemColor: const Color(0xFF2E683D),
@@ -249,7 +241,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: 280,
                       height: buttonHeight,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const LogSymptomScreen(),
+                            ),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFA8D497),
                           foregroundColor: const Color(0xFF2E683D),
@@ -1153,39 +1151,159 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildCommunityTab() {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.favorite,
-              size: 64,
-              color: const Color(0xFF2E683D),
+    return Column(
+      children: [
+        // Green appbar
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.only(left: 30, right: 30, top: 40, bottom: 20),
+          decoration: const BoxDecoration(
+            color: Color(0xFF2E683D),
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Support hub',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Poppins',
+                  ),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Mental health support and daily affirmations',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    fontFamily: 'Poppins',
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            Text(
-              'Community',
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Poppins',
-                color: Color(0xFF2E683D),
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Coming soon',
-              style: TextStyle(
-                fontSize: 14,
-                fontFamily: 'Poppins',
-                color: Colors.grey,
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+        // Body with daily affirmation and other content
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Daily affirmation card
+                Container(
+                  width: 361,
+                  height: 130,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFA8D497).withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(
+                      color: const Color(0xFF2E683D),
+                      width: 1,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      // Top row: spark icon, text, refresh button
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.flash_on,
+                            color: const Color(0xFF2E683D),
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'Daily affirmation',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF2E683D),
+                              fontFamily: 'Poppins',
+                            ),
+                          ),
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _currentAffirmation = "You are stronger than you think.";
+                              });
+                            },
+                            child: Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.refresh,
+                                  size: 16,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      // Affirmation text (2 lines)
+                      Text(
+                        _currentAffirmation,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF2E683D),
+                          fontFamily: 'Poppins',
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  'Cultural Guidance',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey.shade200),
+                  ),
+                  child: Text(
+                    'Coping with family pressure and finding peace in community support. Explore recommended readings and groups.',
+                    style: TextStyle(color: Colors.grey.shade700),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text(AppLocalizations.of(context)!.exploreCommunityGroups),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
