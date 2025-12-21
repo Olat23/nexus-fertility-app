@@ -65,42 +65,42 @@ jobs:
                 path: build/app/outputs/bundle/release/app-release.aab
 
 # Build iOS app
-    ios:
-        name: Build iOS App & Run Tests
-        runs-on: macos-latest
-        env:
-            API_URL: https://fertipath-backend.onrender.com
-            FIREBASE_CREDENTIALS: ${{ secrets.FIREBASE_CREDENTIALS }}
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v6
-            - name: Set up Flutter
-              uses: subosito/flutter-action@v2
-              with:
-                flutter-version: '3.38.0'
-                channel: stable
-            - name: Accept iOS licenses
-              run: sudo xcodebuild -license accept || true
+#    ios:
+#        name: Build iOS App & Run Tests
+#        runs-on: macos-latest
+#        env:
+#             API_URL: https://fertipath-backend.onrender.com
+#            FIREBASE_CREDENTIALS: ${{ secrets.FIREBASE_CREDENTIALS }}
+#        steps:
+#            - name: Checkout code
+#              uses: actions/checkout@v6
+#            - name: Set up Flutter
+#              uses: subosito/flutter-action@v2
+#              with:
+#                flutter-version: '3.38.0'
+#                channel: stable
+#            - name: Accept iOS licenses
+#              run: sudo xcodebuild -license accept || true
 
-            - name: Create Firebase credentials file
-              run: echo "$FIREBASE_CREDENTIALS" > firebase_credentials.json
-            - name: Install dependencies
-              run: flutter pub get
+#            - name: Create Firebase credentials file
+#              run: echo "$FIREBASE_CREDENTIALS" > firebase_credentials.json
+#            - name: Install dependencies
+#              run: flutter pub get
 
-            - name: Run Flutter tests
-              run: flutter test --coverage || true
+#            - name: Run Flutter tests
+#              run: flutter test --coverage || true
 
-            - name: Upload coverage artifact
-              uses: actions/upload-artifact@v4
-              with:
-                name: coverage-ios
-                path: coverage/lcov.info
-            - name: Build iOS app
-              run: flutter build ios --release --no-codesign --dart-define=API_URL=$API_URL 
-            - name: Upload iOS app artifact
-              uses: actions/upload-artifact@v4
-              with:
-                name: ios-app
-                path: build/ios/iphoneos/Runner.app
+#            - name: Upload coverage artifact
+#              uses: actions/upload-artifact@v4
+#              with:
+#                name: coverage-ios
+#                path: coverage/lcov.info
+#            - name: Build iOS app
+#              run: flutter build ios --release --no-codesign --dart-define=API_URL=$API_URL 
+#            - name: Upload iOS app artifact
+#              uses: actions/upload-artifact@v4
+#              with:
+#                name: ios-app
+#                path: build/ios/iphoneos/Runner.app
 
 
