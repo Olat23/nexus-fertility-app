@@ -18,19 +18,15 @@ class AuthService extends ChangeNotifier {
   User? get currentUser => _currentUser;
 
   AuthService() {
+    // Minimal initialization; token will be managed by ApiService
     _initialize();
   }
 
   Future<void> _initialize() async {
+    // Minimal initialization; token will be managed by ApiService
     try {
-      _prefs = await SharedPreferences.getInstance();
-      _loadUserFromPrefs();
-      
-      // Load stored token into API service
-      await _loadStoredToken();
-    } catch (e) {
-      debugPrint('SharedPreferences init error: $e');
-    }
+      await _apiService.getStoredToken();
+    } catch (_) {}
   }
 
   // Load stored token from SharedPreferences and set it in ApiService
@@ -93,8 +89,6 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<void> _saveUserToPrefs(User user) async {
-    await _ensurePrefs();
-    await _setString('user', _jsonEncode(user.toJson()));
     _currentUser = user;
     _authStateController.add(user);
     notifyListeners();
@@ -132,6 +126,7 @@ class AuthService extends ChangeNotifier {
       }
 
       // Optionally send OTP via API when full details are provided
+      // Send OTP via backend if enough data is provided
       if (username != null && firstName != null && lastName != null && phoneNumber != null) {
         await _apiService.sendOtp(
           email: email,
@@ -201,7 +196,7 @@ class AuthService extends ChangeNotifier {
         'preferredLanguage': preferredLanguage,
       };
       
-      await _setString('registration_data_$phoneNumber', _jsonEncode(registrationData));
+      _inMemoryPrefs['registration_data_$phoneNumber'] = _jsonEncode(registrationData);
 
       // Send OTP via backend API to email
       if (email != null && username != null && firstName != null && lastName != null && password != null) {
@@ -287,8 +282,7 @@ class AuthService extends ChangeNotifier {
   }) async {
     try {
       // Get registration data using phone number to find associated email
-      await _ensurePrefs();
-      final registrationDataJson = _getString('registration_data_$phoneNumber');
+      final registrationDataJson = _inMemoryPrefs['registration_data_$phoneNumber'];
       
       if (registrationDataJson == null) {
         throw AuthException(AuthErrorCodes.userNotFound,
@@ -468,8 +462,7 @@ class AuthService extends ChangeNotifier {
       await _apiService.logout();
       
       _currentUser = null;
-      await _ensurePrefs();
-      await _removeString('user');
+      _inMemoryPrefs.remove('user');
       _authStateController.add(null);
       notifyListeners();
       
@@ -478,8 +471,7 @@ class AuthService extends ChangeNotifier {
       debugPrint('Sign out error: $e');
       // Clear local data even if API call fails
       _currentUser = null;
-      await _ensurePrefs();
-      await _removeString('user');
+      _inMemoryPrefs.remove('user');
       _authStateController.add(null);
       notifyListeners();
     }
