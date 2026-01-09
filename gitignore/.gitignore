@@ -1,0 +1,122 @@
+so thee team sent this flie and we are to have a meeting in the next hour so to where i am now how do i explan to them the work I have done so far and how can i sent it to me for review also tell the the tools and languages used in case i am asked and question 
+
+
+You can find general documentation for Flutter at: https://docs.flutter.dev/
+Detailed API documentation is available at: https://api.flutter.dev/
+If you prefer video documentation, consider: https://www.youtube.com/c/flutterdev
+
+In order to run your application, type:
+
+  $ flutter run
+
+Your application code is in .\lib\main.dart.
+
+PS C:\Users\hp\OneDrive\Documents\nexus_fertility_app> # Run in Chrome
+PS C:\Users\hp\OneDrive\Documents\nexus_fertility_app> flutter run -d chrome# Run in Chrome
+Target file "Run" not found.
+PS C:\Users\hp\OneDrive\Documents\nexus_fertility_app> flutter run -d chrome
+Launching lib\main.dart on Chrome in debug mode...
+Waiting for connection from debug service on Chrome...           1499.5s
+
+Flutter run key commands.
+r Hot reload. 
+R Hot restart.
+h List all available interactive commands.
+d Detach (terminate "flutter run" but leave application running).
+c Clear the screen
+q Quit (terminate the application on the device).
+
+
+
+
+PS C:\Users\hp\OneDrive\Documents\nexus_fertility_app>  flutter run -d chrome
+Launching lib\main.dart on Chrome in debug mode...
+Waiting for connection from debug service on Chrome...            323.2s
+
+Flutter run key commands.
+r Hot reload. 
+R Hot restart.
+h List all available interactive commands.
+d Detach (terminate "flutter run" but leave application running).
+c Clear the screen
+q Quit (terminate the application on the device).
+
+
+# Flutter/Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+flutter_*/
+
+
+# Android
+android/.gradle/
+android/app/build/
+android/gradle/
+android/local.properties
+*.apk
+*.aar
+*.ap_
+*.aab
+
+
+# iOS
+ios/.generated/
+ios/Flutter/App.framework/
+ios/Flutter/Flutter.framework/
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/ephemeral/
+ios/Pods/
+ios/Runner/GeneratedPluginRegistrant.*
+
+
+# IDEA
+.idea/
+*.iml
+*.iws
+
+
+# VS Code
+.vscode/
+*.code-workspace
+
+
+# macOS
+.DS_Store
+
+
+# Windows
+Thumbs.db
+
+
+# Logs
+*.log
+logs/
+
+
+# Temp files
+*.swp
+*.swo
+*.swn
+
+
+# Environment
+.env
+.env.local
+.env.development
+.env.production
+
+
+# Coverage
+coverage/
+lcov.info
+
+
+# Misc
+.flutter-plugins
+.flutter-plugins-dependencies
+.pubspec.lock
+.metadata
